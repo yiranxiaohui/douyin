@@ -1,4 +1,4 @@
-syntax = "proto2";
+syntax = "proto3";
 
 package douyin.core;
 
@@ -7,26 +7,54 @@ option go_package = "user";
 import "api.proto";
 
 message douyin_user_request {
-  required int64 user_id = 1; // 用户id
-  required string token = 2; // 用户鉴权token
+  int64 user_id = 1; // 用户id
+  string token = 2; // 用户鉴权token
 }
 
 message douyin_user_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
-  required User user = 3; // 用户信息
-}
-
-message User {
-  required int64 id = 1; // 用户id
-  required string name = 2; // 用户名称
-  optional int64 follow_count = 3; // 关注总数
-  optional int64 follower_count = 4; // 粉丝总数
-  required bool is_follow = 5; // true-已关注，false-未关注
+  int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  string status_msg = 2; // 返回状态描述
+  api.User user = 3; // 用户信息
 }
 
 service UserService{
   rpc User(douyin_user_request) returns(douyin_user_response){
     option (api.get) = "/douyin/user/";
+  }
+}
+
+message douyin_user_login_request {
+  string username = 1[(api.form)="username",(api.body)="username",(api.vd)="len($)>0 && len($)<33"]; // 登录用户名
+  string password = 2[(api.form)="password",(api.body)="password",(api.vd)="len($)>0 && len($)<33"]; // 登录密码
+}
+
+message douyin_user_login_response {
+  int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  string status_msg = 2; // 返回状态描述
+  int64 user_id = 3; // 用户id
+  string token = 4; // 用户鉴权token
+}
+
+service UserLoginService{
+  rpc UserLogin(douyin_user_login_request) returns(douyin_user_login_response){
+    option (api.post) = "/douyin/user/login/";
+  }
+}
+
+message douyin_user_register_request {
+  string username = 1; // 注册用户名，最长32个字符
+  string password = 2; // 密码，最长32个字符
+}
+
+message douyin_user_register_response {
+  int32 status_code = 1; // 状态码，0-成功，其他值-失败
+  string status_msg = 2; // 返回状态描述
+  int64 user_id = 3; // 用户id
+  string token = 4; // 用户鉴权token
+}
+
+service UserRegisterService {
+  rpc UserRegister(douyin_user_register_request) returns(douyin_user_register_response) {
+    option (api.post) = "/douyin/user/register/";
   }
 }
