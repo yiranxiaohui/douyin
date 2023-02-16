@@ -15,7 +15,7 @@ type MyClaims struct {
 
 var MySecret = []byte("我们是第一") // 定义secret，后面会用到
 
-// 生成token
+// MakeToken 生成token
 func MakeToken(id int64, password string) (tokenString string, err error) {
 	claim := MyClaims{
 		ID:       id,
@@ -36,7 +36,7 @@ func Secret() jwt.Keyfunc {
 	}
 }
 
-// 解析jwt，返回token中存的数据
+// ParseToken 解析jwt，返回token中存的数据
 func ParseToken(tokenss string) (*MyClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenss, &MyClaims{}, Secret())
 	if err != nil {
