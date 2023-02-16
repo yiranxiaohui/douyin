@@ -36,6 +36,7 @@ func Secret() jwt.Keyfunc {
 	}
 }
 
+// 解析jwt，返回token中存的数据
 func ParseToken(tokenss string) (*MyClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenss, &MyClaims{}, Secret())
 	if err != nil {
