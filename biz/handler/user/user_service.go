@@ -46,7 +46,7 @@ func User(ctx context.Context, c *app.RequestContext) {
 	if strings.Compare(getToken, pack.GetMD5String(result.Username+result.Password)) == 0 {
 		resp = &user.DouyinUserResponse{User: pack.User(result), StatusMsg: consts.StatusMessage(consts.StatusOK), StatusCode: config.StatusOK}
 	} else {
-		resp = &user.DouyinUserResponse{User: nil, StatusCode: 505, StatusMsg: "用户ID出错！"}
+		resp = &user.DouyinUserResponse{User: nil, StatusCode: config.StatusInternalServerError, StatusMsg: "用户ID出错！"}
 	}
 
 	c.JSON(consts.StatusOK, resp)
