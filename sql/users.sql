@@ -5,7 +5,7 @@ create table users (
     follow_count int not null comment '关注总数',
     follower_count int not null comment '粉丝总数',
     is_follow int not null comment '是否关注',
-    token int not null,
+    token varchar(100) not null,
     primary key (`id`),
     key `UK_USERNAME` (`username`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET =utf8;
