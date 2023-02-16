@@ -4,6 +4,9 @@ package publish
 
 import (
 	"context"
+	"douyin/biz/config"
+	"io"
+	"os"
 
 	publish "douyin/biz/model/publish"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -23,5 +26,38 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(publish.DouyinPublishActionResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	defer c.JSON(consts.StatusOK, resp)
+
+	getData := req.GetData()
+	getToken := req.GetToken()
+	getTitle := req.GetTitle()
+
+	out, err := os.Create(config.ServerVideoPath + getToken + getTitle + ".mp4")
+
+	if err != nil {
+		resp.StatusMsg = err.Error()
+		resp.StatusCode = consts.StatusInternalServerError
+		return
+	}
+
+	data, err := getData.Open()
+
+	if err != nil {
+		resp.StatusMsg = err.Error()
+		resp.StatusCode = consts.StatusInternalServerError
+		return
+	}
+
+	_, err = io.Copy(out, data)
+
+	if err != nil {
+		resp.StatusMsg = err.Error()
+		resp.StatusCode = consts.StatusInternalServerError
+		return
+	}
+
+	resp = &publish.DouyinPublishActionResponse{
+		StatusCode: consts.StatusOK,
+		StatusMsg:  consts.StatusMessage(consts.StatusOK),
+	}
 }

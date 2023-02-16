@@ -1,3 +1,3 @@
 package config
 
-const ServerVideoPath = "/douyin/video"
+const ServerVideoPath = "./video/"
