@@ -53,7 +53,7 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 		result, err := query.Q.User.Where(query.User.Username.Eq(getUsername)).Take()
 		if err != nil {
 			resp = &user.DouyinUserRegisterResponse{
-				StatusCode: 114514,
+				StatusCode: 500,
 				StatusMsg:  err.Error(),
 				UserId:     nil,
 				Token:      nil,
@@ -69,7 +69,7 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 		}
 	} else {
 		resp = &user.DouyinUserRegisterResponse{
-			StatusCode: 114514,
+			StatusCode: 500,
 			StatusMsg:  err.Error(),
 			UserId:     nil,
 			Token:      nil,

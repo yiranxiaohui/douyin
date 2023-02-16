@@ -42,11 +42,10 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 	//设置响应体
 	if err != nil {
 		resp = &user.DouyinUserLoginResponse{
-			StatusMsg: err.Error(),
-			UserId:    nil,
-			Token:     nil,
-			//待改
-			StatusCode: 114514,
+			StatusMsg:  err.Error(),
+			UserId:     nil,
+			Token:      nil,
+			StatusCode: 500,
 		}
 	} else {
 		userToken := pack.GetMD5String(result.Username + result.Password)
