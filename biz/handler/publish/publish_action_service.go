@@ -5,8 +5,13 @@ package publish
 import (
 	"context"
 	"douyin/biz/config"
+	"douyin/biz/pack"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 	"io"
 	"os"
+	"strconv"
+	"time"
 
 	publish "douyin/biz/model/publish"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -32,7 +37,19 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 	getToken := req.GetToken()
 	getTitle := req.GetTitle()
 
-	out, err := os.Create(config.ServerVideoPath + getToken + getTitle + ".mp4")
+	userdata, err := pack.ParseToken(getToken)
+
+	if err != nil {
+		resp.StatusMsg = err.Error()
+		resp.StatusCode = consts.StatusInternalServerError
+		return
+	}
+
+	nowUnix := time.Now().Unix()
+
+	VideoFilePath := config.ServerVideoPath + strconv.FormatInt(userdata.ID, 10) + "_" + strconv.FormatInt(nowUnix, 10) + ".mp4"
+
+	out, err := os.Create(VideoFilePath)
 
 	if err != nil {
 		resp.StatusMsg = err.Error()
@@ -55,6 +72,19 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 		resp.StatusCode = consts.StatusInternalServerError
 		return
 	}
+
+	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
+
+	newVideo := &publish.Video{
+		UserId:       userdata.ID,
+		PlayUrl:      VideoFilePath,
+		CoverUrl:     "",
+		CommentCount: 0,
+		Title:        getTitle,
+		ReleaseTime:  nowUnix,
+	}
+
+	db.Create(newVideo)
 
 	resp = &publish.DouyinPublishActionResponse{
 		StatusCode: consts.StatusOK,

@@ -52,24 +52,25 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 		db.Create(&newUser)
 		result, err := query.Q.User.Where(query.User.Username.Eq(getUsername)).Take()
 		if err != nil {
-			resp = &user.DouyinUserRegisterResponse{
-				StatusCode: config.StatusInternalServerError,
-				StatusMsg:  err.Error(),
-			}
+			resp.StatusMsg = err.Error()
+			resp.StatusCode = consts.StatusInternalServerError
 		} else {
-			userToken, _ := pack.MakeToken(result.ID, result.Password)
-			resp = &user.DouyinUserRegisterResponse{
-				StatusCode: config.StatusOK,
-				StatusMsg:  consts.StatusMessage(consts.StatusOK),
-				UserId:     result.ID,
-				Token:      userToken,
+			userToken, err := pack.MakeToken(result.ID, result.Password)
+			if err != nil {
+				resp.StatusMsg = err.Error()
+				resp.StatusCode = consts.StatusInternalServerError
+			} else {
+				resp = &user.DouyinUserRegisterResponse{
+					StatusCode: consts.StatusOK,
+					StatusMsg:  consts.StatusMessage(consts.StatusOK),
+					UserId:     &result.ID,
+					Token:      &userToken,
+				}
 			}
 		}
 	} else {
-		resp = &user.DouyinUserRegisterResponse{
-			StatusCode: config.StatusInternalServerError,
-			StatusMsg:  err.Error(),
-		}
+		resp.StatusMsg = "注册失败,用户名重复"
+		resp.StatusCode = consts.StatusInternalServerError
 	}
 	c.JSON(consts.StatusOK, resp)
 }
