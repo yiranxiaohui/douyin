@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/cloudwego/hertz v0.5.2
+	github.com/golang-jwt/jwt/v4 v4.4.3
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/mysql v1.4.6
 	gorm.io/gen v0.3.21
@@ -19,7 +20,6 @@ require (
 	github.com/cloudwego/netpoll v0.3.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
-	github.com/golang-jwt/jwt/v4 v4.4.3 // indirect
 	github.com/golang/protobuf v1.5.0 // indirect
 	github.com/henrylee2cn/ameda v1.4.10 // indirect
 	github.com/henrylee2cn/goutil v0.0.0-20210127050712-89660552f6f8 // indirect
