@@ -43,16 +43,14 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		resp = &user.DouyinUserLoginResponse{
 			StatusMsg:  err.Error(),
-			UserId:     nil,
-			Token:      nil,
 			StatusCode: config.StatusInternalServerError,
 		}
 	} else {
 		userToken := pack.GetMD5String(result.Username + result.Password)
 		resp = &user.DouyinUserLoginResponse{
 			StatusMsg:  consts.StatusMessage(consts.StatusOK),
-			UserId:     &result.ID,
-			Token:      &userToken,
+			UserId:     result.ID,
+			Token:      userToken,
 			StatusCode: config.StatusOK,
 		}
 	}

@@ -55,24 +55,20 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 			resp = &user.DouyinUserRegisterResponse{
 				StatusCode: config.StatusInternalServerError,
 				StatusMsg:  err.Error(),
-				UserId:     nil,
-				Token:      nil,
 			}
 		} else {
 			userToken := pack.GetMD5String(getUsername + getPassword)
 			resp = &user.DouyinUserRegisterResponse{
 				StatusCode: config.StatusOK,
 				StatusMsg:  consts.StatusMessage(consts.StatusOK),
-				UserId:     &result.ID,
-				Token:      &userToken,
+				UserId:     result.ID,
+				Token:      userToken,
 			}
 		}
 	} else {
 		resp = &user.DouyinUserRegisterResponse{
 			StatusCode: config.StatusInternalServerError,
 			StatusMsg:  err.Error(),
-			UserId:     nil,
-			Token:      nil,
 		}
 	}
 	c.JSON(consts.StatusOK, resp)

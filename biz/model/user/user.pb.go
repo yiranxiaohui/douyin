@@ -199,10 +199,10 @@ type DouyinUserLoginResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	StatusCode int32   `protobuf:"varint,1,req,name=status_code,json=statusCode" json:"status_code,required" form:"status_code,required" query:"status_code,required"` // 状态码，0-成功，其他值-失败
-	StatusMsg  string  `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg" json:"status_msg,omitempty" form:"status_msg" query:"status_msg"`                        // 返回状态描述
-	UserId     *int64  `protobuf:"varint,3,req,name=user_id,json=userId" json:"user_id,required" form:"user_id,required" query:"user_id,required"`                     // 用户id
-	Token      *string `protobuf:"bytes,4,req,name=token" json:"token,required" form:"token,required" query:"token,required"`                                          // 用户鉴权token
+	StatusCode int32  `protobuf:"varint,1,req,name=status_code,json=statusCode" json:"status_code,required" form:"status_code,required" query:"status_code,required"` // 状态码，0-成功，其他值-失败
+	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg" json:"status_msg,omitempty" form:"status_msg" query:"status_msg"`                        // 返回状态描述
+	UserId     int64  `protobuf:"varint,3,req,name=user_id,json=userId" json:"user_id,required" form:"user_id,required" query:"user_id,required"`                     // 用户id
+	Token      string `protobuf:"bytes,4,req,name=token" json:"token,required" form:"token,required" query:"token,required"`                                          // 用户鉴权token
 }
 
 func (x *DouyinUserLoginResponse) Reset() {
@@ -252,15 +252,15 @@ func (x *DouyinUserLoginResponse) GetStatusMsg() string {
 }
 
 func (x *DouyinUserLoginResponse) GetUserId() int64 {
-	if x != nil && x.UserId != nil {
-		return *x.UserId
+	if x != nil {
+		return x.UserId
 	}
 	return 0
 }
 
 func (x *DouyinUserLoginResponse) GetToken() string {
 	if x != nil {
-		return *x.Token
+		return x.Token
 	}
 	return ""
 }
@@ -325,10 +325,10 @@ type DouyinUserRegisterResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	StatusCode int32   `protobuf:"varint,1,req,name=status_code,json=statusCode" json:"status_code,required" form:"status_code,required" query:"status_code,required"` // 状态码，0-成功，其他值-失败
-	StatusMsg  string  `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg" json:"status_msg,omitempty" form:"status_msg" query:"status_msg"`                        // 返回状态描述
-	UserId     *int64  `protobuf:"varint,3,req,name=user_id,json=userId" json:"user_id,required" form:"user_id,required" query:"user_id,required"`                     // 用户id
-	Token      *string `protobuf:"bytes,4,req,name=token" json:"token,required" form:"token,required" query:"token,required"`                                          // 用户鉴权token
+	StatusCode int32  `protobuf:"varint,1,req,name=status_code,json=statusCode" json:"status_code,required" form:"status_code,required" query:"status_code,required"` // 状态码，0-成功，其他值-失败
+	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg" json:"status_msg,omitempty" form:"status_msg" query:"status_msg"`                        // 返回状态描述
+	UserId     int64  `protobuf:"varint,3,req,name=user_id,json=userId" json:"user_id,required" form:"user_id,required" query:"user_id,required"`                     // 用户id
+	Token      string `protobuf:"bytes,4,req,name=token" json:"token,required" form:"token,required" query:"token,required"`                                          // 用户鉴权token
 }
 
 func (x *DouyinUserRegisterResponse) Reset() {
@@ -378,15 +378,15 @@ func (x *DouyinUserRegisterResponse) GetStatusMsg() string {
 }
 
 func (x *DouyinUserRegisterResponse) GetUserId() int64 {
-	if x != nil && x.UserId != nil {
-		return *x.UserId
+	if x != nil {
+		return x.UserId
 	}
 	return 0
 }
 
 func (x *DouyinUserRegisterResponse) GetToken() string {
-	if x != nil && x.Token != nil {
-		return *x.Token
+	if x != nil {
+		return x.Token
 	}
 	return ""
 }
