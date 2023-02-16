@@ -144,8 +144,8 @@ type DouyinUserLoginRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Username *string `protobuf:"bytes,1,req,name=username" json:"username,required" form:"username,required" vd:"len($)>0 && len($)<33"` // 登录用户名
-	Password *string `protobuf:"bytes,2,req,name=password" json:"password,required" form:"password,required" vd:"len($)>0 && len($)<33"` // 登录密码
+	Username *string `protobuf:"bytes,1,req,name=username" json:"username,required" query:"username,required" form:"username,required" vd:"len($)>0 && len($)<33"` // 登录用户名
+	Password *string `protobuf:"bytes,2,req,name=password" json:"password,required" query:"password,required" form:"password,required" vd:"len($)>0 && len($)<33"` // 登录密码
 }
 
 func (x *DouyinUserLoginRequest) Reset() {
@@ -199,8 +199,8 @@ type DouyinUserLoginResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	StatusCode *int32  `protobuf:"varint,1,req,name=status_code,json=statusCode" json:"status_code,required" form:"status_code,required" query:"status_code,required"` // 状态码，0-成功，其他值-失败
-	StatusMsg  *string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg" json:"status_msg,omitempty" form:"status_msg" query:"status_msg"`                        // 返回状态描述
+	StatusCode int32   `protobuf:"varint,1,req,name=status_code,json=statusCode" json:"status_code,required" form:"status_code,required" query:"status_code,required"` // 状态码，0-成功，其他值-失败
+	StatusMsg  string  `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg" json:"status_msg,omitempty" form:"status_msg" query:"status_msg"`                        // 返回状态描述
 	UserId     *int64  `protobuf:"varint,3,req,name=user_id,json=userId" json:"user_id,required" form:"user_id,required" query:"user_id,required"`                     // 用户id
 	Token      *string `protobuf:"bytes,4,req,name=token" json:"token,required" form:"token,required" query:"token,required"`                                          // 用户鉴权token
 }
@@ -238,15 +238,15 @@ func (*DouyinUserLoginResponse) Descriptor() ([]byte, []int) {
 }
 
 func (x *DouyinUserLoginResponse) GetStatusCode() int32 {
-	if x != nil && x.StatusCode != nil {
-		return *x.StatusCode
+	if x != nil {
+		return x.StatusCode
 	}
 	return 0
 }
 
 func (x *DouyinUserLoginResponse) GetStatusMsg() string {
-	if x != nil && x.StatusMsg != nil {
-		return *x.StatusMsg
+	if x != nil {
+		return x.StatusMsg
 	}
 	return ""
 }
@@ -259,7 +259,7 @@ func (x *DouyinUserLoginResponse) GetUserId() int64 {
 }
 
 func (x *DouyinUserLoginResponse) GetToken() string {
-	if x != nil && x.Token != nil {
+	if x != nil {
 		return *x.Token
 	}
 	return ""

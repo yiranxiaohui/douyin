@@ -20,9 +20,11 @@ import (
 // User .
 // @router /douyin/user/ [GET]
 func User(ctx context.Context, c *app.RequestContext) {
+
 	var err error
 	var req user.DouyinUserRequest
 	err = c.BindAndValidate(&req)
+
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
@@ -36,10 +38,9 @@ func User(ctx context.Context, c *app.RequestContext) {
 	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
 
 	query.SetDefault(db)
-
 	result, err := query.Q.User.Where(query.User.ID.In(getUserId)).First()
 	if err != nil {
-		fmt.Errorf("用户ID出错！%v", err)
+		_ = fmt.Errorf("用户ID出错！%v", err)
 	}
 
 	if strings.Compare(getToken, pack.GetMD5String(result.Username+result.Password)) == 0 {

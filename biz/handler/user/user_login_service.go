@@ -4,10 +4,14 @@ package user
 
 import (
 	"context"
-
-	user "douyin/biz/model/user"
+	"douyin/biz/config"
+	"douyin/biz/model/query"
+	"douyin/biz/model/user"
+	"douyin/biz/pack"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 // UserLogin .
@@ -20,8 +24,39 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
+	//以上是参数校验
 
 	resp := new(user.DouyinUserLoginResponse)
+
+	//取参数
+	getUsername := req.GetUsername()
+	getPassword := req.GetPassword()
+
+	//设置数据源
+	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
+	query.SetDefault(db)
+
+	//查询
+	result, err := query.Q.User.Where(query.User.Username.Eq(getUsername), query.User.Password.Eq(getPassword)).Take()
+
+	//设置响应体
+	if err != nil {
+		resp = &user.DouyinUserLoginResponse{
+			StatusMsg: err.Error(),
+			UserId:    nil,
+			Token:     nil,
+			//待改
+			StatusCode: 114514,
+		}
+	} else {
+		userToken := pack.GetMD5String(result.Username + result.Password)
+		resp = &user.DouyinUserLoginResponse{
+			StatusMsg:  consts.StatusMessage(consts.StatusOK),
+			UserId:     &result.ID,
+			Token:      &userToken,
+			StatusCode: config.StatusOK,
+		}
+	}
 
 	c.JSON(consts.StatusOK, resp)
 }
