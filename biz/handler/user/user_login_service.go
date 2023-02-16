@@ -46,7 +46,7 @@ func UserLogin(ctx context.Context, c *app.RequestContext) {
 			StatusCode: config.StatusInternalServerError,
 		}
 	} else {
-		userToken := pack.GetMD5String(result.Username + result.Password)
+		userToken, _ := pack.MakeToken(result.ID, result.Password)
 		resp = &user.DouyinUserLoginResponse{
 			StatusMsg:  consts.StatusMessage(consts.StatusOK),
 			UserId:     result.ID,

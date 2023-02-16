@@ -43,7 +43,8 @@ func User(ctx context.Context, c *app.RequestContext) {
 		_ = fmt.Errorf("用户ID出错！%v", err)
 	}
 
-	if strings.Compare(getToken, pack.GetMD5String(result.Username+result.Password)) == 0 {
+	token, _ := pack.MakeToken(result.ID, result.Password)
+	if strings.Compare(getToken, token) == 0 {
 		resp = &user.DouyinUserResponse{User: pack.User(result), StatusMsg: consts.StatusMessage(consts.StatusOK), StatusCode: config.StatusOK}
 	} else {
 		resp = &user.DouyinUserResponse{User: nil, StatusCode: config.StatusInternalServerError, StatusMsg: "用户ID出错！"}

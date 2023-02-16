@@ -57,7 +57,7 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 				StatusMsg:  err.Error(),
 			}
 		} else {
-			userToken := pack.GetMD5String(getUsername + getPassword)
+			userToken, _ := pack.MakeToken(result.ID, result.Password)
 			resp = &user.DouyinUserRegisterResponse{
 				StatusCode: config.StatusOK,
 				StatusMsg:  consts.StatusMessage(consts.StatusOK),
