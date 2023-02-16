@@ -14,14 +14,14 @@ import (
 // @router /douyin/user/ [POST]
 func FavoriteAction(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req favorite._favorite_action_request
+	var req favorite.DouyinFavoriteActionRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
 
-	resp := new(favorite._favorite_action_response)
+	resp := new(favorite.DouyinFavoriteActionResponse)
 
 	c.JSON(consts.StatusOK, resp)
 }
