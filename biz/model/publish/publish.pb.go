@@ -22,16 +22,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Video struct {
-	ID           int64  `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`  // ID
-	UserId       int64  `gorm:"column:user_id;not null" json:"user_id"`             // 用户名
-	PlayUrl      string `gorm:"column:play_url;not null" json:"play_url"`           // 密码
-	CoverUrl     string `gorm:"column:cover_url;not null" json:"cover_url"`         // 关注总数
-	CommentCount int64  `gorm:"column:comment_count;not null" json:"comment_count"` // 粉丝总数
-	Title        string `gorm:"column:title;not null" json:"title"`                 // 是否关注
-	ReleaseTime  int64  `gorm:"column:release_time;not null" json:"release_time"`
-}
-
 type DouyinPublishActionRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

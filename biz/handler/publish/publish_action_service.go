@@ -5,6 +5,8 @@ package publish
 import (
 	"context"
 	"douyin/biz/config"
+	"douyin/biz/model/orm_gen"
+	"douyin/biz/model/query"
 	"douyin/biz/pack"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -74,11 +76,12 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 	}
 
 	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
+	query.SetDefault(db)
 
-	newVideo := &publish.Video{
-		UserId:       userdata.ID,
-		PlayUrl:      VideoFilePath,
-		CoverUrl:     "",
+	newVideo := &orm_gen.Video{
+		UserID:       userdata.ID,
+		PlayURL:      VideoFilePath,
+		CoverURL:     "",
 		CommentCount: 0,
 		Title:        getTitle,
 		ReleaseTime:  nowUnix,
