@@ -53,7 +53,7 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 		result, err := query.Q.User.Where(query.User.Username.Eq(getUsername)).Take()
 		if err != nil {
 			resp = &user.DouyinUserRegisterResponse{
-				StatusCode: 500,
+				StatusCode: config.StatusInternalServerError,
 				StatusMsg:  err.Error(),
 				UserId:     nil,
 				Token:      nil,
@@ -61,7 +61,7 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 		} else {
 			userToken := pack.GetMD5String(getUsername + getPassword)
 			resp = &user.DouyinUserRegisterResponse{
-				StatusCode: consts.StatusOK,
+				StatusCode: config.StatusOK,
 				StatusMsg:  consts.StatusMessage(consts.StatusOK),
 				UserId:     &result.ID,
 				Token:      &userToken,
@@ -69,7 +69,7 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 		}
 	} else {
 		resp = &user.DouyinUserRegisterResponse{
-			StatusCode: 500,
+			StatusCode: config.StatusInternalServerError,
 			StatusMsg:  err.Error(),
 			UserId:     nil,
 			Token:      nil,
