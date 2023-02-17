@@ -43,11 +43,11 @@ func User(ctx context.Context, c *app.RequestContext) {
 		_ = fmt.Errorf("用户ID出错！%v", err)
 	}
 
-	token, _ := pack.MakeToken(result.ID, result.Password)
-	if strings.Compare(getToken, token) == 0 {
+	myClaim, _ := pack.ParseToken(getToken)
+	if strings.Compare(result.Password, myClaim.Password) == 0 && result.ID == myClaim.ID {
 		resp = &user.DouyinUserResponse{User: pack.User(result), StatusMsg: consts.StatusMessage(consts.StatusOK), StatusCode: config.StatusOK}
 	} else {
-		resp = &user.DouyinUserResponse{User: nil, StatusCode: config.StatusInternalServerError, StatusMsg: "用户ID出错！"}
+		resp = &user.DouyinUserResponse{User: nil, StatusCode: config.StatusInternalServerError, StatusMsg: consts.StatusMessage(consts.StatusInternalServerError)}
 	}
 
 	c.JSON(consts.StatusOK, resp)

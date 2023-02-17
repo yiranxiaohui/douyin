@@ -67,3 +67,13 @@ message Comment {
   string content = 3; // 评论内容
   string create_date = 4; // 评论发布日期，格式 mm-dd
 }
+
+message FriendUser {
+  int64 id = 1; // 用户id
+  string name = 2; // 用户名称
+  int64 follow_count = 3; // 关注总数
+  int64 follower_count = 4; // 粉丝总数
+  bool is_follow = 5; // true-已关注，false-未关注
+  string message = 6; // 和该好友的最新聊天消息
+  int64 msgType = 7; // message消息的类型，0 => 当前请求用户接收的消息， 1 => 当前请求用户发送的消息
+}
