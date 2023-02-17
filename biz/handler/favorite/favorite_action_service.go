@@ -39,28 +39,28 @@ func FavoriteAction(ctx context.Context, c *app.RequestContext) {
 	isEorror := 0 //标记是否正确
 
 	//通过ActionType确定是点赞还是取消
-	if getActionType == 1 {//点赞
+	if getActionType == 1 { //点赞
 		myClaims, err := pack.ParseToken(getToken)
 		userFavor, err := query.User.Where(query.User.ID.Eq(myClaims.ID)).First()
 		if err != nil {
 			isEorror = 1
-		}else {
+		} else {
 			//查找是否有重复数据
 			first, err := query.Favorite.Where(query.Favorite.UserID.Eq(myClaims.ID).AddCol(query.Favorite.VideoID.Eq(getVideoId))).First()
-			if err != nil || first == nil{
-				query.Favorite.Create(&orm_gen.Favorite{UserID: userFavor.ID,VideoID: getVideoId})
+			if err != nil || first == nil {
+				query.Favorite.Create(&orm_gen.Favorite{UserID: userFavor.ID, VideoID: getVideoId})
 				isEorror = 0
-			}else {
+			} else {
 				isEorror = 1
 			}
 		}
-	}else {//取消
+	} else { //取消
 		myClaims, err := pack.ParseToken(getToken)
 		userDisFavor, err := query.User.Where(query.User.ID.Eq(myClaims.ID)).First()
 		if err != nil {
 			isEorror = 0
-		}else {
-			query.Favorite.Unscoped().Delete(&orm_gen.Favorite{UserID: userDisFavor.ID,VideoID: getVideoId})
+		} else {
+			query.Favorite.Unscoped().Delete(&orm_gen.Favorite{UserID: userDisFavor.ID, VideoID: getVideoId})
 			isEorror = 1
 		}
 	}
@@ -68,14 +68,15 @@ func FavoriteAction(ctx context.Context, c *app.RequestContext) {
 	if isEorror == 1 {
 		resp = &favorite.DouyinFavoriteActionResponse{
 			StatusCode: config.StatusInternalServerError,
-			StatusMsg: consts.StatusMessage(consts.StatusInternalServerError),
+			StatusMsg:  consts.StatusMessage(consts.StatusInternalServerError),
 		}
-	}else {
+	} else {
 		resp = &favorite.DouyinFavoriteActionResponse{
 			StatusCode: config.StatusOK,
-			StatusMsg: consts.StatusMessage(consts.StatusOK),
+			StatusMsg:  consts.StatusMessage(consts.StatusOK),
 		}
 	}
 
+	println(resp.StatusCode)
 	c.JSON(consts.StatusOK, resp)
 }

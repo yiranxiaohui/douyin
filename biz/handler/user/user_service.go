@@ -45,9 +45,16 @@ func User(ctx context.Context, c *app.RequestContext) {
 
 	myClaim, _ := pack.ParseToken(getToken)
 	if strings.Compare(result.Password, myClaim.Password) == 0 && result.ID == myClaim.ID {
-		resp = &user.DouyinUserResponse{User: pack.User(result), StatusMsg: consts.StatusMessage(consts.StatusOK), StatusCode: config.StatusOK}
+		resp = &user.DouyinUserResponse{
+			User:       pack.User(result),
+			StatusMsg:  consts.StatusMessage(consts.StatusOK),
+			StatusCode: config.StatusOK,
+		}
 	} else {
-		resp = &user.DouyinUserResponse{User: nil, StatusCode: config.StatusInternalServerError, StatusMsg: consts.StatusMessage(consts.StatusInternalServerError)}
+		resp = &user.DouyinUserResponse{
+			User: nil, StatusCode: config.StatusInternalServerError,
+			StatusMsg: consts.StatusMessage(consts.StatusInternalServerError),
+		}
 	}
 
 	c.JSON(consts.StatusOK, resp)
