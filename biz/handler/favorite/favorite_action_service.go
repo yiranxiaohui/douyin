@@ -5,18 +5,18 @@ package favorite
 import (
 	"context"
 	"douyin/biz/config"
+	favorite "douyin/biz/model/favorite"
 	"douyin/biz/model/orm_gen"
 	"douyin/biz/model/query"
 	"douyin/biz/pack"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-
-	favorite "douyin/biz/model/favorite"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 // FavoriteAction .
+// @router /douyin/favorite/action [POST]
 func FavoriteAction(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req favorite.DouyinFavoriteActionRequest
@@ -77,6 +77,5 @@ func FavoriteAction(ctx context.Context, c *app.RequestContext) {
 		}
 	}
 
-	println(resp.StatusCode)
 	c.JSON(consts.StatusOK, resp)
 }
