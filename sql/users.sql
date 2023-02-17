@@ -1,5 +1,5 @@
 create table users (
-    id bigint(64) not null auto_increment comment 'ID',
+    id bigint(64) not null comment 'ID',
     username varchar(64) not null comment '用户名',
     password varchar(30) not null comment '密码',
     follow_count int not null comment '关注总数',
