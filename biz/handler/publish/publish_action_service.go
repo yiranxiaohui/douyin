@@ -78,6 +78,7 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 	query.SetDefault(db)
 
 	newVideo := &orm_gen.Video{
+		ID:           pack.GetSnowflakeId(),
 		UserID:       userdata.ID,
 		PlayURL:      VideoFilePath,
 		CoverURL:     "",
