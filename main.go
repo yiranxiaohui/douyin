@@ -9,6 +9,9 @@ import (
 func main() {
 	h := server.Default()
 
+	h.Static("/video", "./")
+
 	register(h)
+
 	h.Spin()
 }

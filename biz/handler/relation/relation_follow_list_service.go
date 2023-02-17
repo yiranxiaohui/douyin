@@ -4,6 +4,10 @@ package relation
 
 import (
 	"context"
+	"douyin/biz/config"
+	"douyin/biz/model/query"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 
 	relation "douyin/biz/model/relation"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -22,6 +26,13 @@ func RelationFollowList(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(relation.DouyinRelationFollowListResponse)
+
+	// 获取参数
+	//getUserId := req.GetUserId()
+	//getToken := req.GetToken()
+
+	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
+	query.SetDefault(db)
 
 	c.JSON(consts.StatusOK, resp)
 }

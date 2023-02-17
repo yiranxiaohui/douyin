@@ -36,8 +36,8 @@ func User(ctx context.Context, c *app.RequestContext) {
 	getToken := req.GetToken()
 
 	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
-
 	query.SetDefault(db)
+
 	result, err := query.Q.User.Where(query.User.ID.In(getUserId)).First()
 	if err != nil {
 		_ = fmt.Errorf("数据库查找出错！%v", err)
