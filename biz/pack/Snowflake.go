@@ -58,6 +58,7 @@ func (s *Snowflake) NextVal() int64 {
 	return r
 }
 
+// GetSnowflakeId 生成不唯一id
 func GetSnowflakeId() int64 {
 	snowflake := new(Snowflake)
 	snowflake.timestamp = time.Now().UnixNano() / 1000000 // 获取当前时间，转毫秒

@@ -93,4 +93,6 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 		StatusCode: consts.StatusOK,
 		StatusMsg:  consts.StatusMessage(consts.StatusOK),
 	}
+
+	c.JSON(consts.StatusOK, resp)
 }
