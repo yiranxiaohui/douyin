@@ -62,7 +62,7 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 				resp.StatusCode = consts.StatusInternalServerError
 			} else {
 				resp = &user.DouyinUserRegisterResponse{
-					StatusCode: consts.StatusOK,
+					StatusCode: config.StatusOK,
 					StatusMsg:  consts.StatusMessage(consts.StatusOK),
 					UserId:     &result.ID,
 					Token:      &userToken,
@@ -73,5 +73,6 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 		resp.StatusMsg = "注册失败,用户名重复"
 		resp.StatusCode = consts.StatusInternalServerError
 	}
+
 	c.JSON(consts.StatusOK, resp)
 }

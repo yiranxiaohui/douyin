@@ -32,7 +32,6 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(publish.DouyinPublishActionResponse)
-
 	defer c.JSON(consts.StatusOK, resp)
 
 	getData := req.GetData()
@@ -89,10 +88,7 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 
 	db.Create(newVideo)
 
-	resp = &publish.DouyinPublishActionResponse{
-		StatusCode: consts.StatusOK,
-		StatusMsg:  consts.StatusMessage(consts.StatusOK),
-	}
+	resp.StatusCode = config.StatusOK
+	resp.StatusMsg = consts.StatusMessage(consts.StatusOK)
 
-	c.JSON(consts.StatusOK, resp)
 }
