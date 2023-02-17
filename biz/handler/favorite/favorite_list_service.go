@@ -11,6 +11,7 @@ import (
 )
 
 // FavoriteList .
+// @router /douyin/favorite/list [GET]
 func FavoriteList(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req favorite.DouyinFavoriteListRequest

@@ -40,7 +40,7 @@ func User(ctx context.Context, c *app.RequestContext) {
 	query.SetDefault(db)
 	result, err := query.Q.User.Where(query.User.ID.In(getUserId)).First()
 	if err != nil {
-		_ = fmt.Errorf("用户ID出错！%v", err)
+		_ = fmt.Errorf("数据库查找出错！%v", err)
 	}
 
 	myClaim, _ := pack.ParseToken(getToken)
