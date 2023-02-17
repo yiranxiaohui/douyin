@@ -13,4 +13,7 @@ func register(r *server.Hertz) {
 	router.GeneratedRegister(r)
 
 	customizedRegister(r)
+
+	r.Static("/video", "./")
+
 }

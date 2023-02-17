@@ -50,7 +50,7 @@ func PublishAction(ctx context.Context, c *app.RequestContext) {
 
 	VideoFilePath := config.ServerVideoPath + strconv.FormatInt(userdata.ID, 10) + "_" + strconv.FormatInt(nowUnix, 10) + ".mp4"
 
-	out, err := os.Create(VideoFilePath)
+	out, err := os.Create("." + VideoFilePath)
 
 	if err != nil {
 		resp.StatusMsg = err.Error()
