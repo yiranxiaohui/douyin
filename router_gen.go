@@ -14,6 +14,4 @@ func register(r *server.Hertz) {
 
 	customizedRegister(r)
 
-	r.Static("/video", "./")
-
 }
