@@ -16,7 +16,11 @@ message douyin_relation_action_response {
   string status_msg = 2; // 返回状态描述
 }
 
-
+service RelationActionService{
+  rpc RelationAction(douyin_relation_action_request) returns(douyin_relation_action_response){
+    option (api.post) = "/douyin/relation/action";
+  }
+}
 
 message douyin_relation_follow_list_request {
   int64 user_id = 1; // 用户id
@@ -27,6 +31,12 @@ message douyin_relation_follow_list_response {
   int32 status_code = 1; // 状态码，0-成功，其他值-失败
   string status_msg = 2; // 返回状态描述
   api.User user_list = 3; // 用户信息列表
+}
+
+service RelationFollowListService{
+  rpc RelationFollowList(douyin_relation_follow_list_request) returns(douyin_relation_follow_list_response){
+    option (api.get) = "/douyin/relation/follow/list";
+  }
 }
 
 message douyin_relation_follower_list_request {
@@ -40,6 +50,12 @@ message douyin_relation_follower_list_response {
   api.User user_list = 3; // 用户列表
 }
 
+service RelationFollowerListService{
+  rpc RelationFollowerList(douyin_relation_follower_list_request) returns(douyin_relation_follower_list_response){
+    option (api.get) = "/douyin/relation/follower/list";
+  }
+}
+
 message douyin_relation_friend_list_request {
   int64 user_id = 1; // 用户id
   string token = 2; // 用户鉴权token
@@ -49,4 +65,10 @@ message douyin_relation_friend_list_response {
   int32 status_code = 1; // 状态码，0-成功，其他值-失败
   string status_msg = 2; // 返回状态描述
   api.FriendUser user_list = 3; // 用户列表
+}
+
+service RelationFriendListService{
+  rpc RelationFriendList(douyin_relation_friend_list_request) returns(douyin_relation_friend_list_response){
+    option (api.get) = "/douyin/relation/friend/list";
+  }
 }

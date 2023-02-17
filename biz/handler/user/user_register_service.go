@@ -33,14 +33,14 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 	getUsername := req.GetUsername()
 	getPassword := req.GetPassword()
 
-	//设置数据源
+	// 设置数据源
 	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
 	query.SetDefault(db)
 
-	//查询用户名是否已存在
+	// 查询用户名是否已存在
 	_, err = query.Q.User.Where(query.User.Username.Eq(getUsername)).Take()
 
-	//不存在同名用户
+	// 不存在同名用户
 	if err != nil {
 		newUser := orm_gen.User{
 			Username:      getUsername,

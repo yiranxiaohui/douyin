@@ -1,0 +1,6 @@
+syntax = "proto3";
+package douyin.extra.second;
+
+option go_package = "message";
+
+import "api.proto";
