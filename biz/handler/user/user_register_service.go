@@ -43,6 +43,7 @@ func UserRegister(ctx context.Context, c *app.RequestContext) {
 	// 不存在同名用户
 	if err != nil {
 		newUser := orm_gen.User{
+			ID:            pack.GetSnowflakeId(),
 			Username:      getUsername,
 			Password:      getPassword,
 			FollowCount:   0,

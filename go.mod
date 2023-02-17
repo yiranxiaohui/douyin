@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/cloudwego/hertz v0.5.2
 	github.com/golang-jwt/jwt/v4 v4.4.3
+	github.com/golang/glog v1.0.0
 	google.golang.org/protobuf v1.28.1
 	gorm.io/driver/mysql v1.4.6
 	gorm.io/gen v0.3.21
