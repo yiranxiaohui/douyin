@@ -37,7 +37,7 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 	//获取前端数据
 	getUserId := req.UserId
 	getToken := req.Token
-	isError := 0                //标记是否正确
+	isError := 0                 //标记是否正确
 	videos := *new([]*api.Video) //用来接收视频列表
 	StatusErrorMsg := ""
 
@@ -46,12 +46,12 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		isError = 1
 		StatusErrorMsg += "pack.ParseToken error...."
-	}else {
+	} else {
 		favorites, err := query.Favorite.Where(query.Favorite.UserID.Eq(parseToken.ID)).Find()
-		if err != nil || favorites[0].UserID != getUserId{
+		if err != nil || favorites[0].UserID != getUserId {
 			isError = 1
 			StatusErrorMsg += "getFavorites error...."
-		}else {//获取点赞视频列表
+		} else { //获取点赞视频列表
 			videoList := make([]*orm_gen.Video, len(favorites))
 			for _, o := range favorites {
 				getVideo, err := query.Video.Where(query.Video.ID.Eq(o.VideoID)).First()
@@ -59,7 +59,7 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 					isError = 1
 					StatusErrorMsg += "getVideo error...."
 					break
-				}else {
+				} else {
 					isError = 0
 				}
 				videoList = append(videoList, getVideo)
@@ -69,11 +69,12 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 		}
 		isError = 0
 	}
+
 	//返回信息
 	if isError == 1 {
 		resp = &favorite.DouyinFavoriteListResponse{
 			StatusCode: config.StatusInternalServerError,
-			StatusMsg: consts.StatusMessage(consts.StatusInternalServerError)+":"+StatusErrorMsg,
+			StatusMsg:  consts.StatusMessage(consts.StatusInternalServerError) + ":" + StatusErrorMsg,
 			VideoList:  nil,
 		}
 	} else {

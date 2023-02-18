@@ -8,7 +8,7 @@ const TableNameUser = "users"
 
 // User mapped from table <users>
 type User struct {
-	ID            int64  `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`    // ID
+	ID            int64  `gorm:"column:id;primaryKey" json:"id"`                       // ID
 	Username      string `gorm:"column:username;not null" json:"username"`             // 用户名
 	Password      string `gorm:"column:password;not null" json:"password"`             // 密码
 	FollowCount   int32  `gorm:"column:follow_count;not null" json:"follow_count"`     // 关注总数

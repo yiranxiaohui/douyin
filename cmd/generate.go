@@ -1,18 +1,17 @@
 package main
 
 import (
+	"douyin/biz/config"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gen"
 	"gorm.io/gorm"
 )
 
-const MySQLDSN = "root:123456@(localhost:3306)/douyin?charset=utf8mb4&parseTime=True&loc=Local"
-
 func main() {
 
 	// 连接数据库
-	db, err := gorm.Open(mysql.Open(MySQLDSN))
+	db, err := gorm.Open(mysql.Open(config.MySQLDSN))
 	if err != nil {
 		panic(fmt.Errorf("cannot establish db connection: %w", err))
 	}
