@@ -31,6 +31,7 @@ func newVideo(db *gorm.DB, opts ...gen.DOOption) video {
 	_video.UserID = field.NewInt64(tableName, "user_id")
 	_video.PlayURL = field.NewString(tableName, "play_url")
 	_video.CoverURL = field.NewString(tableName, "cover_url")
+	_video.FavoriteCount = field.NewInt32(tableName, "favorite_count")
 	_video.CommentCount = field.NewInt32(tableName, "comment_count")
 	_video.Title = field.NewString(tableName, "title")
 	_video.ReleaseTime = field.NewInt64(tableName, "release_time")
@@ -43,14 +44,15 @@ func newVideo(db *gorm.DB, opts ...gen.DOOption) video {
 type video struct {
 	videoDo
 
-	ALL          field.Asterisk
-	ID           field.Int64  // ID
-	UserID       field.Int64  // 作者ID
-	PlayURL      field.String // 播放地址
-	CoverURL     field.String // 封面地址
-	CommentCount field.Int32  // 评论数
-	Title        field.String // 视频标题
-	ReleaseTime  field.Int64  // 提交时间
+	ALL           field.Asterisk
+	ID            field.Int64  // ID
+	UserID        field.Int64  // 作者ID
+	PlayURL       field.String // 播放地址
+	CoverURL      field.String // 封面地址
+	FavoriteCount field.Int32
+	CommentCount  field.Int32  // 评论数
+	Title         field.String // 视频标题
+	ReleaseTime   field.Int64  // 提交时间
 
 	fieldMap map[string]field.Expr
 }
@@ -71,6 +73,7 @@ func (v *video) updateTableName(table string) *video {
 	v.UserID = field.NewInt64(table, "user_id")
 	v.PlayURL = field.NewString(table, "play_url")
 	v.CoverURL = field.NewString(table, "cover_url")
+	v.FavoriteCount = field.NewInt32(table, "favorite_count")
 	v.CommentCount = field.NewInt32(table, "comment_count")
 	v.Title = field.NewString(table, "title")
 	v.ReleaseTime = field.NewInt64(table, "release_time")
@@ -90,11 +93,12 @@ func (v *video) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (v *video) fillFieldMap() {
-	v.fieldMap = make(map[string]field.Expr, 7)
+	v.fieldMap = make(map[string]field.Expr, 8)
 	v.fieldMap["id"] = v.ID
 	v.fieldMap["user_id"] = v.UserID
 	v.fieldMap["play_url"] = v.PlayURL
 	v.fieldMap["cover_url"] = v.CoverURL
+	v.fieldMap["favorite_count"] = v.FavoriteCount
 	v.fieldMap["comment_count"] = v.CommentCount
 	v.fieldMap["title"] = v.Title
 	v.fieldMap["release_time"] = v.ReleaseTime

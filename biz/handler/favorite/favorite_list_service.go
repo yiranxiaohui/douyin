@@ -4,6 +4,13 @@ package favorite
 
 import (
 	"context"
+	"douyin/biz/config"
+	"douyin/biz/model/api"
+	"douyin/biz/model/orm_gen"
+	"douyin/biz/model/query"
+	"douyin/biz/pack"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 
 	favorite "douyin/biz/model/favorite"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -22,6 +29,60 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(favorite.DouyinFavoriteListResponse)
+
+	//设置数据库
+	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
+	query.SetDefault(db)
+
+	//获取前端数据
+	getUserId := req.UserId
+	getToken := req.Token
+	isError := 0                //标记是否正确
+	videos := *new([]*api.Video) //用来接收视频列表
+	StatusErrorMsg := ""
+
+	//用户token鉴定
+	parseToken, err := pack.ParseToken(getToken)
+	if err != nil {
+		isError = 1
+		StatusErrorMsg += "pack.ParseToken error...."
+	}else {
+		favorites, err := query.Favorite.Where(query.Favorite.UserID.Eq(parseToken.ID)).Find()
+		if err != nil || favorites[0].UserID != getUserId{
+			isError = 1
+			StatusErrorMsg += "getFavorites error...."
+		}else {//获取点赞视频列表
+			videoList := make([]*orm_gen.Video, len(favorites))
+			for _, o := range favorites {
+				getVideo, err := query.Video.Where(query.Video.ID.Eq(o.VideoID)).First()
+				if err != nil {
+					isError = 1
+					StatusErrorMsg += "getVideo error...."
+					break
+				}else {
+					isError = 0
+				}
+				videoList = append(videoList, getVideo)
+			}
+			videos = pack.Videos(videoList)
+			isError = 0
+		}
+		isError = 0
+	}
+	//返回信息
+	if isError == 1 {
+		resp = &favorite.DouyinFavoriteListResponse{
+			StatusCode: config.StatusInternalServerError,
+			StatusMsg: consts.StatusMessage(consts.StatusInternalServerError)+":"+StatusErrorMsg,
+			VideoList:  nil,
+		}
+	} else {
+		resp = &favorite.DouyinFavoriteListResponse{
+			StatusCode: config.StatusOK,
+			StatusMsg:  consts.StatusMessage(consts.StatusOK),
+			VideoList:  videos,
+		}
+	}
 
 	c.JSON(consts.StatusOK, resp)
 }
