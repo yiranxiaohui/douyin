@@ -6,14 +6,13 @@ import (
 	"context"
 	"douyin/biz/config"
 	"douyin/biz/model/api"
+	publish "douyin/biz/model/publish"
 	"douyin/biz/model/query"
 	"douyin/biz/pack"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-
-	publish "douyin/biz/model/publish"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 // PublishList .

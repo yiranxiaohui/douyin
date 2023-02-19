@@ -31,7 +31,7 @@ func IsFollowed(followerId int64, userId int64) (result bool) {
 	return
 }
 
-func getUserById(id int64) *api.User {
+func GetUserById(id int64) *api.User {
 	var p *api.User = nil
 	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
 	query.SetDefault(db)

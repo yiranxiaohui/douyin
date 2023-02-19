@@ -1,6 +1,6 @@
 create table videos(
     id bigint(64) not null auto_increment comment 'ID',
-    user_id varchar(64) not null comment '作者ID',
+    user_id bigint(64) not null comment '作者ID',
     play_url varchar(128) not null comment '播放地址',
     cover_url varchar(128) not null comment '封面地址',
     favorite_count int not null comment '点赞数',

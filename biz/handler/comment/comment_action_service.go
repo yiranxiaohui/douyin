@@ -4,6 +4,15 @@ package comment
 
 import (
 	"context"
+	"douyin/biz/config"
+	"douyin/biz/model/api"
+	"douyin/biz/model/orm_gen"
+	"douyin/biz/model/query"
+	"douyin/biz/pack"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"strconv"
+	"time"
 
 	comment "douyin/biz/model/comment"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -20,8 +29,71 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
 	resp := new(comment.DouyinCommentActionResponse)
+	defer c.JSON(consts.StatusOK, resp)
 
-	c.JSON(consts.StatusOK, resp)
+	getToken := req.GetToken()
+	claims, err := pack.ParseToken(getToken)
+	if err != nil {
+		resp.StatusCode = consts.StatusInternalServerError
+		resp.StatusMsg = err.Error()
+		return
+	}
+	userId := claims.ID
+
+	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
+	query.SetDefault(db)
+
+	if req.GetActionType() == 1 {
+		//发布评论
+		now := time.Now().Unix()
+		id := pack.GetSnowflakeId()
+		err := query.Comment.Create(&orm_gen.Comment{
+			UserID:     userId,
+			ID:         id,
+			Text:       req.GetCommentText(),
+			CreateDate: now,
+		})
+		if err != nil {
+			resp.StatusCode = consts.StatusInternalServerError
+			resp.StatusMsg = err.Error()
+			return
+		}
+		//其实我很担心前面成功后面失败，但是怎么回滚呢
+		err = query.CommentList.Create(&orm_gen.CommentList{
+			ID:      id,
+			VideoID: req.GetVideoId(),
+		})
+		if err != nil {
+			resp.StatusCode = consts.StatusInternalServerError
+			resp.StatusMsg = err.Error()
+			return
+		}
+		resp.Comment = &api.Comment{
+			Id:         id,
+			User:       pack.GetUserById(userId),
+			Content:    req.GetCommentText(),
+			CreateDate: strconv.FormatInt(now, 10),
+		}
+		resp.StatusCode = config.StatusOK
+		resp.StatusMsg = consts.StatusMessage(consts.StatusOK)
+	} else {
+		//删除评论
+		_, err := query.Comment.Unscoped().Where(query.Comment.ID.Eq(req.GetCommentId())).Delete()
+		if err != nil {
+			resp.StatusCode = consts.StatusInternalServerError
+			resp.StatusMsg = err.Error()
+			return
+		}
+		_, err = query.CommentList.Unscoped().Where(query.CommentList.ID.Eq(req.GetCommentId())).Delete()
+		if err != nil {
+			resp.StatusCode = consts.StatusInternalServerError
+			resp.StatusMsg = err.Error()
+			return
+		}
+		resp.Comment = nil
+		resp.StatusCode = config.StatusOK
+		resp.StatusMsg = consts.StatusMessage(consts.StatusOK)
+	}
+
 }

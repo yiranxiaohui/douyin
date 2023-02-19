@@ -16,15 +16,19 @@ import (
 )
 
 var (
-	Q          = new(Query)
-	Favorite   *favorite
-	FollowList *followList
-	User       *user
-	Video      *video
+	Q           = new(Query)
+	Comment     *comment
+	CommentList *commentList
+	Favorite    *favorite
+	FollowList  *followList
+	User        *user
+	Video       *video
 )
 
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
+	Comment = &Q.Comment
+	CommentList = &Q.CommentList
 	Favorite = &Q.Favorite
 	FollowList = &Q.FollowList
 	User = &Q.User
@@ -33,32 +37,38 @@ func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
-		db:         db,
-		Favorite:   newFavorite(db, opts...),
-		FollowList: newFollowList(db, opts...),
-		User:       newUser(db, opts...),
-		Video:      newVideo(db, opts...),
+		db:          db,
+		Comment:     newComment(db, opts...),
+		CommentList: newCommentList(db, opts...),
+		Favorite:    newFavorite(db, opts...),
+		FollowList:  newFollowList(db, opts...),
+		User:        newUser(db, opts...),
+		Video:       newVideo(db, opts...),
 	}
 }
 
 type Query struct {
 	db *gorm.DB
 
-	Favorite   favorite
-	FollowList followList
-	User       user
-	Video      video
+	Comment     comment
+	CommentList commentList
+	Favorite    favorite
+	FollowList  followList
+	User        user
+	Video       video
 }
 
 func (q *Query) Available() bool { return q.db != nil }
 
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
-		db:         db,
-		Favorite:   q.Favorite.clone(db),
-		FollowList: q.FollowList.clone(db),
-		User:       q.User.clone(db),
-		Video:      q.Video.clone(db),
+		db:          db,
+		Comment:     q.Comment.clone(db),
+		CommentList: q.CommentList.clone(db),
+		Favorite:    q.Favorite.clone(db),
+		FollowList:  q.FollowList.clone(db),
+		User:        q.User.clone(db),
+		Video:       q.Video.clone(db),
 	}
 }
 
@@ -72,27 +82,33 @@ func (q *Query) WriteDB() *Query {
 
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
-		db:         db,
-		Favorite:   q.Favorite.replaceDB(db),
-		FollowList: q.FollowList.replaceDB(db),
-		User:       q.User.replaceDB(db),
-		Video:      q.Video.replaceDB(db),
+		db:          db,
+		Comment:     q.Comment.replaceDB(db),
+		CommentList: q.CommentList.replaceDB(db),
+		Favorite:    q.Favorite.replaceDB(db),
+		FollowList:  q.FollowList.replaceDB(db),
+		User:        q.User.replaceDB(db),
+		Video:       q.Video.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
-	Favorite   IFavoriteDo
-	FollowList IFollowListDo
-	User       IUserDo
-	Video      IVideoDo
+	Comment     ICommentDo
+	CommentList ICommentListDo
+	Favorite    IFavoriteDo
+	FollowList  IFollowListDo
+	User        IUserDo
+	Video       IVideoDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		Favorite:   q.Favorite.WithContext(ctx),
-		FollowList: q.FollowList.WithContext(ctx),
-		User:       q.User.WithContext(ctx),
-		Video:      q.Video.WithContext(ctx),
+		Comment:     q.Comment.WithContext(ctx),
+		CommentList: q.CommentList.WithContext(ctx),
+		Favorite:    q.Favorite.WithContext(ctx),
+		FollowList:  q.FollowList.WithContext(ctx),
+		User:        q.User.WithContext(ctx),
+		Video:       q.Video.WithContext(ctx),
 	}
 }
 

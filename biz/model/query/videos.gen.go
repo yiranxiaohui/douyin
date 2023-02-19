@@ -49,7 +49,7 @@ type video struct {
 	UserID        field.Int64  // 作者ID
 	PlayURL       field.String // 播放地址
 	CoverURL      field.String // 封面地址
-	FavoriteCount field.Int32
+	FavoriteCount field.Int32  // 点赞数
 	CommentCount  field.Int32  // 评论数
 	Title         field.String // 视频标题
 	ReleaseTime   field.Int64  // 提交时间
