@@ -3,6 +3,7 @@ package pack
 import (
 	"crypto/md5"
 	"douyin/biz/config"
+	"douyin/biz/model/api"
 	"douyin/biz/model/query"
 	"errors"
 	"fmt"
@@ -28,4 +29,19 @@ func IsFollowed(followerId int64, userId int64) (result bool) {
 		result = err == nil
 	}
 	return
+}
+
+func getUserById(id int64) *api.User {
+	var p *api.User = nil
+	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
+	query.SetDefault(db)
+	if err != nil {
+		_ = errors.New("db error!")
+	} else {
+		u, err := query.Q.User.Where(query.User.ID.Eq(id)).Take()
+		if err == nil {
+			p = User(u)
+		}
+	}
+	return p
 }
