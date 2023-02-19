@@ -4,6 +4,13 @@ package message
 
 import (
 	"context"
+	"douyin/biz/config"
+	"douyin/biz/model/orm_gen"
+	"douyin/biz/model/query"
+	"douyin/biz/pack"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"time"
 
 	message "douyin/biz/model/message"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -23,5 +30,34 @@ func MessageAction(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(message.DouyinMessageActionResponse)
 
-	c.JSON(consts.StatusOK, resp)
+	defer c.JSON(consts.StatusOK, resp)
+
+	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
+	query.SetDefault(db)
+
+	getToken := req.GetToken()
+	claims, err := pack.ParseToken(getToken)
+	if err != nil {
+		resp.StatusMsg = err.Error()
+		resp.StatusCode = config.StatusInternalServerError
+		return
+	}
+	FromUserId := pack.ID{claims.ID}
+
+	if req.GetActionType() == 1 {
+		err := query.Message.Create(&orm_gen.Message{
+			ID:         pack.GetSnowflakeId(),
+			ToUserID:   req.GetToUserId(),
+			FromUserID: FromUserId.Id,
+			Content:    req.GetContent(),
+			CreateTime: time.Now().Format("2006-01-02 15:04:05"),
+		})
+		if err != nil {
+			resp.StatusMsg = err.Error()
+			resp.StatusCode = config.StatusInternalServerError
+			return
+		}
+	}
+	resp.StatusCode = config.StatusOK
+	resp.StatusMsg = consts.StatusMessage(consts.StatusOK)
 }

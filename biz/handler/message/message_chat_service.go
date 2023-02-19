@@ -4,10 +4,15 @@ package message
 
 import (
 	"context"
-
+	"douyin/biz/config"
+	"douyin/biz/model/api"
 	message "douyin/biz/model/message"
+	"douyin/biz/model/query"
+	"douyin/biz/pack"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 // MessageChat .
@@ -22,6 +27,34 @@ func MessageChat(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(message.DouyinMessageChatResponse)
+	defer c.JSON(consts.StatusOK, resp)
 
-	c.JSON(consts.StatusOK, resp)
+	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
+	query.SetDefault(db)
+
+	getToken := req.GetToken()
+	claims, err := pack.ParseToken(getToken)
+	if err != nil {
+		resp.StatusMsg = err.Error()
+		resp.StatusCode = config.StatusInternalServerError
+		return
+	}
+	Id := pack.ID{claims.ID}
+	messages, err := query.Q.Message.Where(query.Message.FromUserID.Eq(Id.Id)).Or(query.Message.ToUserID.Eq(Id.Id)).Order(query.Message.CreateTime).Find()
+	if err != nil {
+		resp.StatusMsg = err.Error()
+		resp.StatusCode = config.StatusInternalServerError
+		return
+	}
+	for _, v := range messages {
+		resp.MessageList = append(resp.MessageList, api.Message{
+			Id:         v.ID,
+			ToUserId:   v.ToUserID,
+			FromUserId: v.FromUserID,
+			Content:    v.Content,
+			CreateTime: v.CreateTime,
+		})
+	}
+	resp.StatusCode = config.StatusOK
+	resp.StatusMsg = consts.StatusMessage(consts.StatusOK)
 }

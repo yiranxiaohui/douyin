@@ -69,16 +69,24 @@ func RelationFriendList(ctx context.Context, c *app.RequestContext) {
 				resp.StatusCode = config.StatusInternalServerError
 				return
 			}
+			msg, err := pack.GetLastestMessage(UserId.Id, friend.GetId())
+			if err != nil {
+				resp.StatusMsg = err.Error()
+				resp.StatusCode = config.StatusInternalServerError
+				return
+			}
+			temp := int64(1)
+			if msg.FromUserId == friend.Id {
+				temp = 0
+			}
 			resp.UserList = append(resp.UserList, api.FriendUser{
 				Id:            friend.Id,
 				Name:          friend.Name,
 				FollowCount:   friend.FollowCount,
 				FollowerCount: friend.FollowerCount,
 				IsFollow:      friend.IsFollow,
-				//待实现
-				Message: "这是一条测试消息",
-				//0为请求，1为发送
-				MsgType: 0,
+				Message:       msg.Content,
+				MsgType:       temp,
 			})
 		}
 	}

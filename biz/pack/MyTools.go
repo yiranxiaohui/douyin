@@ -69,3 +69,24 @@ func (i ID) GetUserInfoById(id int64) (*api.User, error) {
 	}
 	return p, err
 }
+
+func GetLastestMessage(aid int64, bid int64) (*api.Message, error) {
+	var p *api.Message = nil
+	var err error = nil
+	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
+	query.SetDefault(db)
+	if err == nil {
+		msg, err := query.Q.Message.Where(query.Message.FromUserID.Eq(aid), query.Message.ToUserID.Eq(bid)).Or(query.Message.FromUserID.Eq(bid), query.Message.ToUserID.Eq(aid)).Order(query.Message.CreateTime.Desc()).First()
+		if err != nil {
+			return nil, err
+		}
+		p = &api.Message{
+			Id:         msg.ID,
+			ToUserId:   msg.ToUserID,
+			FromUserId: msg.FromUserID,
+			Content:    msg.Content,
+			CreateTime: msg.CreateTime,
+		}
+	}
+	return p, err
+}

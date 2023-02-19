@@ -21,6 +21,7 @@ var (
 	CommentList *commentList
 	Favorite    *favorite
 	FollowList  *followList
+	Message     *message
 	User        *user
 	Video       *video
 )
@@ -31,6 +32,7 @@ func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	CommentList = &Q.CommentList
 	Favorite = &Q.Favorite
 	FollowList = &Q.FollowList
+	Message = &Q.Message
 	User = &Q.User
 	Video = &Q.Video
 }
@@ -42,6 +44,7 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 		CommentList: newCommentList(db, opts...),
 		Favorite:    newFavorite(db, opts...),
 		FollowList:  newFollowList(db, opts...),
+		Message:     newMessage(db, opts...),
 		User:        newUser(db, opts...),
 		Video:       newVideo(db, opts...),
 	}
@@ -54,6 +57,7 @@ type Query struct {
 	CommentList commentList
 	Favorite    favorite
 	FollowList  followList
+	Message     message
 	User        user
 	Video       video
 }
@@ -67,6 +71,7 @@ func (q *Query) clone(db *gorm.DB) *Query {
 		CommentList: q.CommentList.clone(db),
 		Favorite:    q.Favorite.clone(db),
 		FollowList:  q.FollowList.clone(db),
+		Message:     q.Message.clone(db),
 		User:        q.User.clone(db),
 		Video:       q.Video.clone(db),
 	}
@@ -87,6 +92,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 		CommentList: q.CommentList.replaceDB(db),
 		Favorite:    q.Favorite.replaceDB(db),
 		FollowList:  q.FollowList.replaceDB(db),
+		Message:     q.Message.replaceDB(db),
 		User:        q.User.replaceDB(db),
 		Video:       q.Video.replaceDB(db),
 	}
@@ -97,6 +103,7 @@ type queryCtx struct {
 	CommentList ICommentListDo
 	Favorite    IFavoriteDo
 	FollowList  IFollowListDo
+	Message     IMessageDo
 	User        IUserDo
 	Video       IVideoDo
 }
@@ -107,6 +114,7 @@ func (q *Query) WithContext(ctx context.Context) *queryCtx {
 		CommentList: q.CommentList.WithContext(ctx),
 		Favorite:    q.Favorite.WithContext(ctx),
 		FollowList:  q.FollowList.WithContext(ctx),
+		Message:     q.Message.WithContext(ctx),
 		User:        q.User.WithContext(ctx),
 		Video:       q.Video.WithContext(ctx),
 	}
