@@ -4,9 +4,14 @@ package relation
 
 import (
 	"context"
+	"douyin/biz/config"
+	"douyin/biz/model/query"
 	relation "douyin/biz/model/relation"
+	"douyin/biz/pack"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 // RelationFollowList .
@@ -21,19 +26,34 @@ func RelationFollowList(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(relation.DouyinRelationFollowListResponse)
+	defer c.JSON(consts.StatusOK, resp)
 
-	//// 获取参数
-	//getUserId := req.GetUserId()
-	//getToken := req.GetToken()
-	//
-	//db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
-	//query.SetDefault(db)
-	//result := make
-	//
-	//result, err := query.Q.FollowList.Where(query.FollowList.UserID.Eq(getUserId))
-	//if err != nil {
-	//	_ = fmt.Errorf("数据库查找出错！%v", err)
-	//}
+	getToken := req.GetToken()
+	token, err := pack.ParseToken(getToken)
+	if err != nil || token.ID != req.GetUserId() {
+		resp.StatusMsg = "登录状态错误，无法获取关注列表"
+		resp.StatusCode = config.StatusInternalServerError
+		return
+	}
+	getUserID := req.GetUserId()
 
-	c.JSON(consts.StatusOK, resp)
+	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
+	query.SetDefault(db)
+
+	userList, err := query.Q.FollowList.Where(query.FollowList.FollowerID.Eq(getUserID)).Find()
+	if err != nil {
+		resp.StatusMsg = err.Error()
+		resp.StatusCode = config.StatusInternalServerError
+		return
+	}
+	for _, v := range userList {
+		p, err := pack.GetUserById(v.UserID)
+		if err != nil {
+			resp.StatusMsg = err.Error()
+			resp.StatusCode = config.StatusInternalServerError
+		}
+		resp.UserList = append(resp.UserList, *p)
+	}
+	resp.StatusCode = config.StatusOK
+	resp.StatusMsg = consts.StatusMessage(consts.StatusOK)
 }

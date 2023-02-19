@@ -4,6 +4,12 @@ package relation
 
 import (
 	"context"
+	"douyin/biz/config"
+	"douyin/biz/model/orm_gen"
+	"douyin/biz/model/query"
+	"douyin/biz/pack"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 
 	relation "douyin/biz/model/relation"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -22,6 +28,50 @@ func RelationAction(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(relation.DouyinRelationActionResponse)
+	defer c.JSON(consts.StatusOK, resp)
 
-	c.JSON(consts.StatusOK, resp)
+	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
+	query.SetDefault(db)
+
+	getToken := req.GetToken()
+	claims, err := pack.ParseToken(getToken)
+	if err != nil {
+		resp.StatusMsg = err.Error()
+		resp.StatusCode = config.StatusInternalServerError
+		return
+	}
+	userId := claims.ID
+	toUserId := req.GetToUserId()
+	if req.GetActionType() == 1 {
+		//关注
+		if pack.IsFollowed(userId, toUserId) {
+			resp.StatusMsg = "已关注,无法重复关注"
+			resp.StatusCode = config.StatusInternalServerError
+			return
+		}
+		err = query.FollowList.Create(&orm_gen.FollowList{
+			FollowerID: userId,
+			UserID:     req.GetToUserId(),
+		})
+		if err != nil {
+			resp.StatusMsg = err.Error()
+			resp.StatusCode = config.StatusInternalServerError
+			return
+		}
+	} else {
+		//取关
+		if !pack.IsFollowed(userId, toUserId) {
+			resp.StatusMsg = "未关注,无法取消关注"
+			resp.StatusCode = config.StatusInternalServerError
+			return
+		}
+		_, err := query.FollowList.Where(query.FollowList.FollowerID.Eq(userId), query.FollowList.UserID.Eq(req.GetToUserId())).Delete()
+		if err != nil {
+			resp.StatusMsg = err.Error()
+			resp.StatusCode = config.StatusInternalServerError
+			return
+		}
+	}
+	resp.StatusMsg = consts.StatusMessage(consts.StatusOK)
+	resp.StatusCode = config.StatusOK
 }

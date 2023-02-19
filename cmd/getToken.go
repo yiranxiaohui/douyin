@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	token, err := pack.MakeToken(207255505750986753, "wqrfasd")
+	token, err := pack.MakeToken(1, "12324255")
 	if err != nil {
 		return
 	}

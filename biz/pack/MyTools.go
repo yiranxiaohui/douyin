@@ -31,17 +31,16 @@ func IsFollowed(followerId int64, userId int64) (result bool) {
 	return
 }
 
-func GetUserById(id int64) *api.User {
+func GetUserById(id int64) (*api.User, error) {
 	var p *api.User = nil
+	var err error = nil
 	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
 	query.SetDefault(db)
-	if err != nil {
-		_ = errors.New("db error!")
-	} else {
+	if err == nil {
 		u, err := query.Q.User.Where(query.User.ID.Eq(id)).Take()
 		if err == nil {
 			p = User(u)
 		}
 	}
-	return p
+	return p, err
 }

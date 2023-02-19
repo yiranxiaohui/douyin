@@ -69,9 +69,15 @@ func CommentAction(ctx context.Context, c *app.RequestContext) {
 			resp.StatusMsg = err.Error()
 			return
 		}
+		user, err := pack.GetUserById(userId)
+		if err != nil {
+			resp.StatusCode = consts.StatusInternalServerError
+			resp.StatusMsg = err.Error()
+			return
+		}
 		resp.Comment = &api.Comment{
 			Id:         id,
-			User:       pack.GetUserById(userId),
+			User:       user,
 			Content:    req.GetCommentText(),
 			CreateDate: strconv.FormatInt(now, 10),
 		}

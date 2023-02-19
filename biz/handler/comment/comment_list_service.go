@@ -47,9 +47,15 @@ func CommentList(ctx context.Context, c *app.RequestContext) {
 			resp.StatusCode = consts.StatusInternalServerError
 			return
 		}
+		user, err := pack.GetUserById(com.UserID)
+		if err != nil {
+			resp.StatusMsg = err.Error()
+			resp.StatusCode = consts.StatusInternalServerError
+			return
+		}
 		resp.CommentList = append(resp.CommentList, api.Comment{
 			Id:         com.ID,
-			User:       pack.GetUserById(com.UserID),
+			User:       user,
 			Content:    com.Text,
 			CreateDate: time.Unix(com.CreateDate, 0).Format("2006-01-02 15:04:05"),
 		})
