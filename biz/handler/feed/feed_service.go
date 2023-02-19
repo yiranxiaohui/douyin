@@ -37,6 +37,10 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 
 	Token := req.GetToken()
 	claims, err := pack.ParseToken(Token)
+	userId := int64(0)
+	if err == nil {
+		userId = claims.ID
+	}
 	//fmt.Println(Token)
 
 	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
@@ -53,7 +57,7 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 	for _, v := range result {
 		user, _ := query.Q.User.Where(query.User.ID.Eq(v.UserID)).Take()
 		LastTime = Min(LastTime, v.ReleaseTime)
-		_, err := query.Q.Favorite.Where(query.Favorite.VideoID.Eq(v.ID), query.Favorite.UserID.Eq(claims.ID)).Take()
+		_, err := query.Q.Favorite.Where(query.Favorite.VideoID.Eq(v.ID), query.Favorite.UserID.Eq(userId)).Take()
 		resp.VideoList = append(resp.VideoList, api.Video{
 			Id: v.ID,
 			Author: &api.User{
