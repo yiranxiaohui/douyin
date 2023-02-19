@@ -131,8 +131,8 @@ type User struct {
 
 	Id            int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id" form:"id" query:"id"`                                                                    // 用户id
 	Name          string `protobuf:"bytes,2,opt,name=name,proto3" json:"name" form:"name" query:"name"`                                                             // 用户名称
-	FollowCount   int32  `protobuf:"varint,3,opt,name=follow_count,json=followCount,proto3" json:"follow_count" form:"follow_count" query:"follow_count"`           // 关注总数
-	FollowerCount int32  `protobuf:"varint,4,opt,name=follower_count,json=followerCount,proto3" json:"follower_count" form:"follower_count" query:"follower_count"` // 粉丝总数
+	FollowCount   int64  `protobuf:"varint,3,opt,name=follow_count,json=followCount,proto3" json:"follow_count" form:"follow_count" query:"follow_count"`           // 关注总数
+	FollowerCount int64  `protobuf:"varint,4,opt,name=follower_count,json=followerCount,proto3" json:"follower_count" form:"follower_count" query:"follower_count"` // 粉丝总数
 	IsFollow      bool   `protobuf:"varint,5,opt,name=is_follow,json=isFollow,proto3" json:"is_follow" form:"is_follow" query:"is_follow"`                          // true-已关注，false-未关注
 }
 
@@ -182,14 +182,14 @@ func (x *User) GetName() string {
 	return ""
 }
 
-func (x *User) GetFollowCount() int32 {
+func (x *User) GetFollowCount() int64 {
 	if x != nil {
 		return x.FollowCount
 	}
 	return 0
 }
 
-func (x *User) GetFollowerCount() int32 {
+func (x *User) GetFollowerCount() int64 {
 	if x != nil {
 		return x.FollowerCount
 	}
