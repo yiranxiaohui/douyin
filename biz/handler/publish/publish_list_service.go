@@ -4,6 +4,12 @@ package publish
 
 import (
 	"context"
+	"douyin/biz/config"
+	"douyin/biz/model/api"
+	"douyin/biz/model/query"
+	"douyin/biz/pack"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 
 	publish "douyin/biz/model/publish"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -22,6 +28,54 @@ func PublishList(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(publish.DouyinPublishListResponse)
+	defer c.JSON(consts.StatusOK, resp)
 
-	c.JSON(consts.StatusOK, resp)
+	getUserID := req.GetUserId()
+	getToken := req.GetToken()
+
+	_, err = pack.ParseToken(getToken)
+	if err != nil {
+		resp.StatusMsg = err.Error()
+		resp.StatusCode = consts.StatusInternalServerError
+		return
+	}
+
+	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
+	query.SetDefault(db)
+
+	videos, err := query.Q.Video.Where(query.Video.UserID.Eq(getUserID)).Find()
+	if err != nil {
+		resp.StatusMsg = err.Error()
+		resp.StatusCode = consts.StatusInternalServerError
+		return
+	}
+
+	user, err := query.Q.User.Where(query.User.ID.Eq(getUserID)).Take()
+	if err != nil {
+		resp.StatusMsg = err.Error()
+		resp.StatusCode = consts.StatusInternalServerError
+		return
+	}
+	UserPointer := &api.User{
+		Id:            user.ID,
+		Name:          user.Username,
+		FollowCount:   user.FollowCount,
+		FollowerCount: user.FollowerCount,
+		IsFollow:      pack.IsFollowed(getUserID, getUserID),
+	}
+	for _, v := range videos {
+		_, err := query.Q.Favorite.Where(query.Favorite.VideoID.Eq(v.ID), query.Favorite.UserID.Eq(getUserID)).Take()
+		resp.VideoList = append(resp.VideoList, api.Video{
+			Id:            v.ID,
+			Author:        UserPointer,
+			PlayUrl:       config.ServerRootUrl + v.PlayURL,
+			CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
+			FavoriteCount: v.FavoriteCount,
+			CommentCount:  v.CommentCount,
+			IsFavorite:    err == nil,
+			Title:         v.Title,
+		})
+	}
+	resp.StatusCode = config.StatusOK
+	resp.StatusMsg = consts.StatusMessage(consts.StatusOK)
 }
