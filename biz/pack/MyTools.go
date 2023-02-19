@@ -44,3 +44,28 @@ func GetUserById(id int64) (*api.User, error) {
 	}
 	return p, err
 }
+
+type ID struct {
+	Id int64
+}
+
+func (i ID) GetUserInfoById(id int64) (*api.User, error) {
+	var p *api.User = nil
+	var err error = nil
+	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
+	query.SetDefault(db)
+	if err == nil {
+		u, err := query.Q.User.Where(query.User.ID.Eq(id)).Take()
+		if err != nil {
+			return nil, err
+		}
+		p = &api.User{
+			Id:            u.ID,
+			Name:          u.Username,
+			FollowCount:   u.FollowCount,
+			FollowerCount: u.FollowerCount,
+			IsFollow:      IsFollowed(i.Id, u.ID),
+		}
+	}
+	return p, err
+}

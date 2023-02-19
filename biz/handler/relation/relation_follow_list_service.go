@@ -35,19 +35,19 @@ func RelationFollowList(ctx context.Context, c *app.RequestContext) {
 		resp.StatusCode = config.StatusInternalServerError
 		return
 	}
-	getUserID := req.GetUserId()
+	FollowerId := pack.ID{req.GetUserId()}
 
 	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
 	query.SetDefault(db)
 
-	userList, err := query.Q.FollowList.Where(query.FollowList.FollowerID.Eq(getUserID)).Find()
+	userList, err := query.Q.FollowList.Where(query.FollowList.FollowerID.Eq(FollowerId.Id)).Find()
 	if err != nil {
 		resp.StatusMsg = err.Error()
 		resp.StatusCode = config.StatusInternalServerError
 		return
 	}
 	for _, v := range userList {
-		p, err := pack.GetUserById(v.UserID)
+		p, err := FollowerId.GetUserInfoById(v.UserID)
 		if err != nil {
 			resp.StatusMsg = err.Error()
 			resp.StatusCode = config.StatusInternalServerError

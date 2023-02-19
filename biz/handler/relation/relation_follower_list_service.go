@@ -4,6 +4,11 @@ package relation
 
 import (
 	"context"
+	"douyin/biz/config"
+	"douyin/biz/model/query"
+	"douyin/biz/pack"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 
 	relation "douyin/biz/model/relation"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -14,14 +19,42 @@ import (
 // @router /douyin/relation/follower/list [GET]
 func RelationFollowerList(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req relation.DouyinRelationFollowerListRequest
+	var req relation.DouyinRelationFollowListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
 
-	resp := new(relation.DouyinRelationFollowerListResponse)
+	resp := new(relation.DouyinRelationFollowListResponse)
+	defer c.JSON(consts.StatusOK, resp)
 
-	c.JSON(consts.StatusOK, resp)
+	getToken := req.GetToken()
+	token, err := pack.ParseToken(getToken)
+	if err != nil || token.ID != req.GetUserId() {
+		resp.StatusMsg = "登录状态错误，无法获取粉丝列表"
+		resp.StatusCode = config.StatusInternalServerError
+		return
+	}
+	UserId := pack.ID{req.GetUserId()}
+
+	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
+	query.SetDefault(db)
+
+	userList, err := query.Q.FollowList.Where(query.FollowList.UserID.Eq(UserId.Id)).Find()
+	if err != nil {
+		resp.StatusMsg = err.Error()
+		resp.StatusCode = config.StatusInternalServerError
+		return
+	}
+	for _, v := range userList {
+		p, err := UserId.GetUserInfoById(v.FollowerID)
+		if err != nil {
+			resp.StatusMsg = err.Error()
+			resp.StatusCode = config.StatusInternalServerError
+		}
+		resp.UserList = append(resp.UserList, *p)
+	}
+	resp.StatusCode = config.StatusOK
+	resp.StatusMsg = consts.StatusMessage(consts.StatusOK)
 }
