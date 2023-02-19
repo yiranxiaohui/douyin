@@ -317,9 +317,9 @@ type DouyinRelationFollowerListResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	StatusCode int32     `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty" form:"status_code" query:"status_code"` // 状态码，0-成功，其他值-失败
-	StatusMsg  string    `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty" form:"status_msg" query:"status_msg"`       // 返回状态描述
-	UserList   *api.User `protobuf:"bytes,3,opt,name=user_list,json=userList,proto3" json:"user_list,omitempty" form:"user_list" query:"user_list"`            // 用户列表
+	StatusCode int32      `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty" form:"status_code" query:"status_code"` // 状态码，0-成功，其他值-失败
+	StatusMsg  string     `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty" form:"status_msg" query:"status_msg"`       // 返回状态描述
+	UserList   []api.User `protobuf:"bytes,3,opt,name=user_list,json=userList,proto3" json:"user_list,omitempty" form:"user_list" query:"user_list"`            // 用户列表
 }
 
 func (x *DouyinRelationFollowerListResponse) Reset() {
@@ -368,7 +368,7 @@ func (x *DouyinRelationFollowerListResponse) GetStatusMsg() string {
 	return ""
 }
 
-func (x *DouyinRelationFollowerListResponse) GetUserList() *api.User {
+func (x *DouyinRelationFollowerListResponse) GetUserList() []api.User {
 	if x != nil {
 		return x.UserList
 	}

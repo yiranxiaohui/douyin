@@ -19,14 +19,14 @@ import (
 // @router /douyin/relation/follower/list [GET]
 func RelationFollowerList(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req relation.DouyinRelationFollowListRequest
+	var req relation.DouyinRelationFollowerListRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
 
-	resp := new(relation.DouyinRelationFollowListResponse)
+	resp := new(relation.DouyinRelationFollowerListResponse)
 	defer c.JSON(consts.StatusOK, resp)
 
 	getToken := req.GetToken()
