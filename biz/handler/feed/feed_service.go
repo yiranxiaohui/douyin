@@ -6,8 +6,9 @@ import (
 	"context"
 	"douyin/biz/config"
 	"douyin/biz/model/api"
-	feed "douyin/biz/model/feed"
+	"douyin/biz/model/feed"
 	"douyin/biz/model/query"
+	"douyin/biz/pack"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"gorm.io/driver/mysql"
@@ -33,7 +34,10 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 		LastTime = time.Now().Unix()
 		resp.NextTime = LastTime
 	}
-	//Token := req.GetToken()
+
+	Token := req.GetToken()
+	claims, err := pack.ParseToken(Token)
+	//fmt.Println(Token)
 
 	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
 	query.SetDefault(db)
@@ -47,22 +51,23 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 	}
 
 	for _, v := range result {
-		user, _ := query.Q.User.Where(query.User.ID.Eq(v.UserID)).First()
+		user, _ := query.Q.User.Where(query.User.ID.Eq(v.UserID)).Take()
 		LastTime = Min(LastTime, v.ReleaseTime)
+		_, err := query.Q.Favorite.Where(query.Favorite.VideoID.Eq(v.ID), query.Favorite.UserID.Eq(claims.ID)).Take()
 		resp.VideoList = append(resp.VideoList, api.Video{
 			Id: v.ID,
 			Author: &api.User{
 				Id:            user.ID,
 				Name:          user.Username,
-				FollowCount:   1,
-				FollowerCount: 1,
-				IsFollow:      true,
+				FollowCount:   user.FollowCount,
+				FollowerCount: user.FollowerCount,
+				IsFollow:      user.IsFollow == 1,
 			},
 			PlayUrl:       config.ServerRootUrl + v.PlayURL,
 			CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
-			FavoriteCount: 1,
-			CommentCount:  1,
-			IsFavorite:    true,
+			FavoriteCount: v.FavoriteCount,
+			CommentCount:  v.CommentCount,
+			IsFavorite:    err == nil,
 			Title:         v.Title,
 		})
 	}

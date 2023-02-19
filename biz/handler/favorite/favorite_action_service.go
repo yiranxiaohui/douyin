@@ -38,40 +38,42 @@ func FavoriteAction(ctx context.Context, c *app.RequestContext) {
 	getActionType := req.ActionType
 	isError := 0 //标记是否正确
 
+	//检测action_type是否合法
+	if getActionType != 1 && getActionType != 2 {
+		isError = 1
+	}
+
 	//准备好原视频数据
-	orginVideo, err := query.Video.Where(query.Video.ID.Eq(getVideoId)).First()
+	orginVideo, err := query.Q.Video.Where(query.Video.ID.Eq(getVideoId)).Take()
 	if err != nil {
 		isError = 1
 	}
 	//鉴定用户token
 	myClaims, err := pack.ParseToken(getToken)
+
 	if err != nil {
 		isError = 1
-	}else {
-		userFavor, err := query.User.Where(query.User.ID.Eq(myClaims.ID)).First()
+	} else {
+		userFavor, err := query.Q.User.Where(query.User.ID.Eq(myClaims.ID)).Take()
 		if err != nil {
+			//没有查到用户了属于是
 			isError = 1
-		}else {
+		} else {
 			//通过ActionType确定是点赞还是取消
 			if getActionType == 1 { //点赞
 				//查找是否有重复数据
-				first, err := query.Favorite.Where(query.Favorite.UserID.Eq(myClaims.ID), query.Favorite.VideoID.Eq(getVideoId)).First()
-				if err != nil || first == nil{
+				_, err := query.Q.Favorite.Where(query.Favorite.UserID.Eq(myClaims.ID), query.Favorite.VideoID.Eq(getVideoId)).Take()
+				if err != nil {
 					query.Favorite.Create(&orm_gen.Favorite{UserID: userFavor.ID, VideoID: getVideoId})
-					query.Video.Where(query.Video.ID.Eq(getVideoId)).Update(query.Video.FavoriteCount,orginVideo.FavoriteCount+1)
+					query.Video.Where(query.Video.ID.Eq(getVideoId)).Update(query.Video.FavoriteCount, orginVideo.FavoriteCount+1)
 				} else {
 					isError = 1
 				}
 			} else { //取消
-				query.Favorite.Unscoped().Where(query.Favorite.UserID.Eq(myClaims.ID),query.Favorite.VideoID.Eq(getVideoId)).Delete()
-				query.Video.Where(query.Video.ID.Eq(getVideoId)).Update(query.Video.FavoriteCount,orginVideo.FavoriteCount-1)
+				query.Favorite.Unscoped().Where(query.Favorite.UserID.Eq(myClaims.ID), query.Favorite.VideoID.Eq(getVideoId)).Delete()
+				query.Video.Where(query.Video.ID.Eq(getVideoId)).Update(query.Video.FavoriteCount, orginVideo.FavoriteCount-1)
 			}
 		}
-	}
-
-	//检测action_type是否合法
-	if getActionType != 1 && getActionType != 2 {
-		isError = 1
 	}
 
 	//返回信息

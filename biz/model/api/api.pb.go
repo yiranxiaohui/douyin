@@ -30,8 +30,8 @@ type Video struct {
 	Author        *User  `protobuf:"bytes,2,opt,name=author,proto3" json:"author" form:"author" query:"author"`                                                     // 视频作者信息
 	PlayUrl       string `protobuf:"bytes,3,opt,name=play_url,json=playUrl,proto3" json:"play_url" form:"play_url" query:"play_url"`                                // 视频播放地址
 	CoverUrl      string `protobuf:"bytes,4,opt,name=cover_url,json=coverUrl,proto3" json:"cover_url" form:"cover_url" query:"cover_url"`                           // 视频封面地址
-	FavoriteCount int64  `protobuf:"varint,5,opt,name=favorite_count,json=favoriteCount,proto3" json:"favorite_count" form:"favorite_count" query:"favorite_count"` // 视频的点赞总数
-	CommentCount  int64  `protobuf:"varint,6,opt,name=comment_count,json=commentCount,proto3" json:"comment_count" form:"comment_count" query:"comment_count"`      // 视频的评论总数
+	FavoriteCount int32  `protobuf:"varint,5,opt,name=favorite_count,json=favoriteCount,proto3" json:"favorite_count" form:"favorite_count" query:"favorite_count"` // 视频的点赞总数
+	CommentCount  int32  `protobuf:"varint,6,opt,name=comment_count,json=commentCount,proto3" json:"comment_count" form:"comment_count" query:"comment_count"`      // 视频的评论总数
 	IsFavorite    bool   `protobuf:"varint,7,opt,name=is_favorite,json=isFavorite,proto3" json:"is_favorite" form:"is_favorite" query:"is_favorite"`                // true-已点赞，false-未点赞
 	Title         string `protobuf:"bytes,8,opt,name=title,proto3" json:"title" form:"title" query:"title"`                                                         // 视频标题
 }
@@ -96,14 +96,14 @@ func (x *Video) GetCoverUrl() string {
 	return ""
 }
 
-func (x *Video) GetFavoriteCount() int64 {
+func (x *Video) GetFavoriteCount() int32 {
 	if x != nil {
 		return x.FavoriteCount
 	}
 	return 0
 }
 
-func (x *Video) GetCommentCount() int64 {
+func (x *Video) GetCommentCount() int32 {
 	if x != nil {
 		return x.CommentCount
 	}
@@ -131,8 +131,8 @@ type User struct {
 
 	Id            int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id" form:"id" query:"id"`                                                                    // 用户id
 	Name          string `protobuf:"bytes,2,opt,name=name,proto3" json:"name" form:"name" query:"name"`                                                             // 用户名称
-	FollowCount   int64  `protobuf:"varint,3,opt,name=follow_count,json=followCount,proto3" json:"follow_count" form:"follow_count" query:"follow_count"`           // 关注总数
-	FollowerCount int64  `protobuf:"varint,4,opt,name=follower_count,json=followerCount,proto3" json:"follower_count" form:"follower_count" query:"follower_count"` // 粉丝总数
+	FollowCount   int32  `protobuf:"varint,3,opt,name=follow_count,json=followCount,proto3" json:"follow_count" form:"follow_count" query:"follow_count"`           // 关注总数
+	FollowerCount int32  `protobuf:"varint,4,opt,name=follower_count,json=followerCount,proto3" json:"follower_count" form:"follower_count" query:"follower_count"` // 粉丝总数
 	IsFollow      bool   `protobuf:"varint,5,opt,name=is_follow,json=isFollow,proto3" json:"is_follow" form:"is_follow" query:"is_follow"`                          // true-已关注，false-未关注
 }
 
@@ -182,14 +182,14 @@ func (x *User) GetName() string {
 	return ""
 }
 
-func (x *User) GetFollowCount() int64 {
+func (x *User) GetFollowCount() int32 {
 	if x != nil {
 		return x.FollowCount
 	}
 	return 0
 }
 
-func (x *User) GetFollowerCount() int64 {
+func (x *User) GetFollowerCount() int32 {
 	if x != nil {
 		return x.FollowerCount
 	}

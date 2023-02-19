@@ -6,23 +6,21 @@ import (
 	"douyin/biz/model/query"
 )
 
-func Videos(models []*orm_gen.Video)  []*api.Video{
-	videos := make([]*api.Video,0, len(models))
+func Videos(models []*orm_gen.Video) []*api.Video {
+	videos := make([]*api.Video, 0, len(models))
 	for _, m := range models {
-		println("models......")
 		if u := Video(m); u != nil {
-			println("Video......")
 			videos = append(videos, u)
 		}
 	}
 	return videos
 }
 
-func Video(model *orm_gen.Video)  *api.Video{
+func Video(model *orm_gen.Video) *api.Video {
 	if model == nil {
 		return nil
 	}
-	first, err := query.User.Where(query.User.ID.In(model.UserID)).First()
+	first, err := query.Q.User.Where(query.User.ID.In(model.UserID)).Take()
 	if err != nil {
 		return nil
 	}
@@ -31,7 +29,7 @@ func Video(model *orm_gen.Video)  *api.Video{
 		Author:       User(first),
 		PlayUrl:      model.PlayURL,
 		CoverUrl:     model.CoverURL,
-		CommentCount: int64(model.CommentCount),
-		Title: model.Title,
+		CommentCount: model.CommentCount,
+		Title:        model.Title,
 	}
 }

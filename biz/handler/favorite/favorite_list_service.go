@@ -35,7 +35,7 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 	query.SetDefault(db)
 
 	//获取前端数据
-	getUserId := req.UserId
+	//getUserId := req.UserId
 	getToken := req.Token
 	isError := 0                 //标记是否正确
 	videos := *new([]*api.Video) //用来接收视频列表
@@ -47,14 +47,14 @@ func FavoriteList(ctx context.Context, c *app.RequestContext) {
 		isError = 1
 		StatusErrorMsg += "pack.ParseToken error...."
 	} else {
-		favorites, err := query.Favorite.Where(query.Favorite.UserID.Eq(parseToken.ID)).Find()
-		if err != nil || favorites[0].UserID != getUserId {
+		favorites, err := query.Q.Favorite.Where(query.Favorite.UserID.Eq(parseToken.ID)).Find()
+		if err != nil {
 			isError = 1
 			StatusErrorMsg += "getFavorites error...."
 		} else { //获取点赞视频列表
 			videoList := make([]*orm_gen.Video, len(favorites))
 			for _, o := range favorites {
-				getVideo, err := query.Video.Where(query.Video.ID.Eq(o.VideoID)).First()
+				getVideo, err := query.Q.Video.Where(query.Video.ID.Eq(o.VideoID)).First()
 				if err != nil {
 					isError = 1
 					StatusErrorMsg += "getVideo error...."
