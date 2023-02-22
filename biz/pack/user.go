@@ -24,8 +24,8 @@ func User(model *orm_gen.User) *api.User {
 	return &api.User{
 		Id:            model.ID,
 		Name:          model.Username,
-		FollowCount:   model.FollowCount,
-		FollowerCount: model.FollowerCount,
+		FollowCount:   int64(model.FollowCount),
+		FollowerCount: int64(model.FollowerCount),
 		IsFollow:      model.IsFollow != 0,
 	}
 }

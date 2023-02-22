@@ -58,8 +58,8 @@ func PublishList(ctx context.Context, c *app.RequestContext) {
 	UserPointer := &api.User{
 		Id:            user.ID,
 		Name:          user.Username,
-		FollowCount:   user.FollowCount,
-		FollowerCount: user.FollowerCount,
+		FollowCount:   int64(user.FollowCount),
+		FollowerCount: int64(user.FollowerCount),
 		IsFollow:      pack.IsFollowed(getUserID, getUserID),
 	}
 	for _, v := range videos {
