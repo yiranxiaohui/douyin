@@ -55,3 +55,18 @@ func _relationfriendlistMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _actionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _listMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _list0Mw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

@@ -18,7 +18,7 @@ message douyin_relation_action_response {
 
 service RelationActionService{
   rpc RelationAction(douyin_relation_action_request) returns(douyin_relation_action_response){
-    option (api.post) = "/douyin/relation/action";
+    option (api.post) = "/douyin/relation/action/";
   }
 }
 
@@ -35,7 +35,7 @@ message douyin_relation_follow_list_response {
 
 service RelationFollowListService{
   rpc RelationFollowList(douyin_relation_follow_list_request) returns(douyin_relation_follow_list_response){
-    option (api.get) = "/douyin/relation/follow/list";
+    option (api.get) = "/douyin/relation/follow/list/";
   }
 }
 
@@ -52,7 +52,7 @@ message douyin_relation_follower_list_response {
 
 service RelationFollowerListService{
   rpc RelationFollowerList(douyin_relation_follower_list_request) returns(douyin_relation_follower_list_response){
-    option (api.get) = "/douyin/relation/follower/list";
+    option (api.get) = "/douyin/relation/follower/list/";
   }
 }
 

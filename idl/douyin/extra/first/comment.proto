@@ -21,7 +21,7 @@ message douyin_comment_action_response {
 
 service CommentActionService{
   rpc CommentAction(douyin_comment_action_request) returns(douyin_comment_action_response){
-    option (api.post) = "/douyin/comment/action";
+    option (api.post) = "/douyin/comment/action/";
   }
 }
 
@@ -38,6 +38,6 @@ message douyin_comment_list_response {
 
 service CommentListService{
   rpc CommentList(douyin_comment_list_request) returns(douyin_comment_list_response){
-    option (api.get) = "/douyin/comment/list";
+    option (api.get) = "/douyin/comment/list/";
   }
 }

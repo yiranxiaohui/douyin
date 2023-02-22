@@ -30,3 +30,13 @@ func _messagechatMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _actionMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _chatMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
