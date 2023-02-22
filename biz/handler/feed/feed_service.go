@@ -63,8 +63,8 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 			Author: &api.User{
 				Id:            user.ID,
 				Name:          user.Username,
-				FollowCount:   user.FollowCount,
-				FollowerCount: user.FollowerCount,
+				FollowCount:   int64(user.FollowCount),
+				FollowerCount: int64(user.FollowerCount),
 				IsFollow:      user.IsFollow == 1,
 			},
 			PlayUrl:       config.ServerRootUrl + v.PlayURL,

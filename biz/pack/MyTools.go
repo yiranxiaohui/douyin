@@ -62,8 +62,8 @@ func (i ID) GetUserInfoById(id int64) (*api.User, error) {
 		p = &api.User{
 			Id:            u.ID,
 			Name:          u.Username,
-			FollowCount:   u.FollowCount,
-			FollowerCount: u.FollowerCount,
+			FollowCount:   int64(u.FollowCount),
+			FollowerCount: int64(u.FollowerCount),
 			IsFollow:      IsFollowed(i.Id, u.ID),
 		}
 	}
