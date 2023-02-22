@@ -70,14 +70,13 @@ func RelationFriendList(ctx context.Context, c *app.RequestContext) {
 				return
 			}
 			msg, err := pack.GetLastestMessage(UserId.Id, friend.GetId())
-			if err != nil {
-				resp.StatusMsg = err.Error()
-				resp.StatusCode = config.StatusInternalServerError
-				return
-			}
-			temp := int64(1)
-			if msg.FromUserId == friend.Id {
-				temp = 0
+			content := ""
+			temp := int64(0)
+			if err == nil {
+				if msg.FromUserId == UserId.Id {
+					temp = int64(1)
+				}
+				content = msg.Content
 			}
 			resp.UserList = append(resp.UserList, &api.FriendUser{
 				Id:            friend.Id,
@@ -85,7 +84,7 @@ func RelationFriendList(ctx context.Context, c *app.RequestContext) {
 				FollowCount:   friend.FollowCount,
 				FollowerCount: friend.FollowerCount,
 				IsFollow:      friend.IsFollow,
-				Message:       msg.Content,
+				Message:       content,
 				MsgType:       temp,
 			})
 		}
