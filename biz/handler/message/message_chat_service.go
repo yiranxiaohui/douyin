@@ -47,7 +47,7 @@ func MessageChat(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	for _, v := range messages {
-		resp.MessageList = append(resp.MessageList, api.Message{
+		resp.MessageList = append(resp.MessageList, &api.Message{
 			Id:         v.ID,
 			ToUserId:   v.ToUserID,
 			FromUserId: v.FromUserID,

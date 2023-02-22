@@ -21,8 +21,14 @@ func Register(r *server.Hertz) {
 		_douyin := root.Group("/douyin", _douyinMw()...)
 		{
 			_message := _douyin.Group("/message", _messageMw()...)
-			_message.POST("/action/", append(_message_ctionMw(), message.MessageAction)...)
-			_message.GET("/chat", append(_messagechatMw(), message.MessageChat)...)
+			{
+				_action := _message.Group("/action", _actionMw()...)
+				_action.POST("/", append(_message_ctionMw(), message.MessageAction)...)
+			}
+			{
+				_chat := _message.Group("/chat", _chatMw()...)
+				_chat.GET("/", append(_messagechatMw(), message.MessageChat)...)
+			}
 		}
 	}
 }

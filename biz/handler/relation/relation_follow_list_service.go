@@ -52,7 +52,7 @@ func RelationFollowList(ctx context.Context, c *app.RequestContext) {
 			resp.StatusMsg = err.Error()
 			resp.StatusCode = config.StatusInternalServerError
 		}
-		resp.UserList = append(resp.UserList, *p)
+		resp.UserList = append(resp.UserList, p)
 	}
 	resp.StatusCode = config.StatusOK
 	resp.StatusMsg = consts.StatusMessage(consts.StatusOK)

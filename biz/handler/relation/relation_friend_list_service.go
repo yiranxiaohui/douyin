@@ -79,7 +79,7 @@ func RelationFriendList(ctx context.Context, c *app.RequestContext) {
 			if msg.FromUserId == friend.Id {
 				temp = 0
 			}
-			resp.UserList = append(resp.UserList, api.FriendUser{
+			resp.UserList = append(resp.UserList, &api.FriendUser{
 				Id:            friend.Id,
 				Name:          friend.Name,
 				FollowCount:   friend.FollowCount,

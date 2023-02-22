@@ -69,8 +69,8 @@ func PublishList(ctx context.Context, c *app.RequestContext) {
 			Author:        UserPointer,
 			PlayUrl:       config.ServerRootUrl + v.PlayURL,
 			CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
-			FavoriteCount: v.FavoriteCount,
-			CommentCount:  v.CommentCount,
+			FavoriteCount: int64(v.FavoriteCount),
+			CommentCount:  int64(v.CommentCount),
 			IsFavorite:    err == nil,
 			Title:         v.Title,
 		})

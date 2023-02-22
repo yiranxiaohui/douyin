@@ -29,7 +29,7 @@ func Video(model *orm_gen.Video) *api.Video {
 		Author:       User(first),
 		PlayUrl:      model.PlayURL,
 		CoverUrl:     model.CoverURL,
-		CommentCount: model.CommentCount,
+		CommentCount: int64(model.CommentCount),
 		Title:        model.Title,
 	}
 }

@@ -53,7 +53,7 @@ func CommentList(ctx context.Context, c *app.RequestContext) {
 			resp.StatusCode = consts.StatusInternalServerError
 			return
 		}
-		resp.CommentList = append(resp.CommentList, api.Comment{
+		resp.CommentList = append(resp.CommentList, &api.Comment{
 			Id:         com.ID,
 			User:       user,
 			Content:    com.Text,
