@@ -21,7 +21,7 @@ func Register(r *server.Hertz) {
 		_douyin := root.Group("/douyin", _douyinMw()...)
 		{
 			_relation := _douyin.Group("/relation", _relationMw()...)
-			_relation.POST("/action", append(_relation_ctionMw(), relation.RelationAction)...)
+			_relation.POST("/action/", append(_relation_ctionMw(), relation.RelationAction)...)
 			{
 				_follow := _relation.Group("/follow", _followMw()...)
 				_follow.GET("/list", append(_relationfollowlistMw(), relation.RelationFollowList)...)
