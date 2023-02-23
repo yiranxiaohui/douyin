@@ -81,9 +81,9 @@ type DouyinMessageChatResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	StatusCode  int32          `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty" form:"status_code" query:"status_code"` // 状态码，0-成功，其他值-失败
-	StatusMsg   string         `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty" form:"status_msg" query:"status_msg"`       // 返回状态描述
-	MessageList []*api.Message `protobuf:"bytes,3,rep,name=message_list,json=messageList,proto3" json:"message_list" form:"message_list" query:"message_list"`       // 消息列表
+	StatusCode  int32         `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code,omitempty" form:"status_code" query:"status_code"` // 状态码，0-成功，其他值-失败
+	StatusMsg   string        `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty" form:"status_msg" query:"status_msg"`       // 返回状态描述
+	MessageList []api.Message `protobuf:"bytes,3,rep,name=message_list,json=messageList,proto3" json:"message_list" form:"message_list" query:"message_list"`       // 消息列表
 }
 
 func (x *DouyinMessageChatResponse) Reset() {
@@ -132,7 +132,7 @@ func (x *DouyinMessageChatResponse) GetStatusMsg() string {
 	return ""
 }
 
-func (x *DouyinMessageChatResponse) GetMessageList() []*api.Message {
+func (x *DouyinMessageChatResponse) GetMessageList() []api.Message {
 	if x != nil {
 		return x.MessageList
 	}

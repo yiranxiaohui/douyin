@@ -41,7 +41,10 @@ func Register(r *server.Hertz) {
 			}
 			{
 				_friend := _relation.Group("/friend", _friendMw()...)
-				_friend.GET("/list", append(_relationfriendlistMw(), relation.RelationFriendList)...)
+				{
+					_friend0 := _friend.Group("/list", _friendMw()...)
+					_friend0.GET("/", append(_relationfriendlistMw(), relation.RelationFriendList)...)
+				}
 			}
 		}
 	}

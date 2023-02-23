@@ -27,10 +27,17 @@ func MessageChat(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(message.DouyinMessageChatResponse)
+	resp.StatusCode = config.StatusOK
+	resp.StatusMsg = consts.StatusMessage(consts.StatusOK)
 	defer c.JSON(consts.StatusOK, resp)
 
 	db, err := gorm.Open(mysql.Open(config.MySQLDSN), &gorm.Config{})
 	query.SetDefault(db)
+	if err != nil {
+		resp.StatusMsg = err.Error()
+		resp.StatusCode = config.StatusInternalServerError
+		return
+	}
 
 	getToken := req.GetToken()
 	claims, err := pack.ParseToken(getToken)
@@ -39,22 +46,20 @@ func MessageChat(ctx context.Context, c *app.RequestContext) {
 		resp.StatusCode = config.StatusInternalServerError
 		return
 	}
+
 	Id := pack.ID{claims.ID}
 	messages, err := query.Q.Message.Where(query.Message.FromUserID.Eq(Id.Id)).Or(query.Message.ToUserID.Eq(Id.Id)).Order(query.Message.CreateTime).Find()
 	if err != nil {
-		resp.StatusMsg = err.Error()
-		resp.StatusCode = config.StatusInternalServerError
-		return
+
+	} else {
+		for _, v := range messages {
+			resp.MessageList = append(resp.MessageList, api.Message{
+				Id:         v.ID,
+				ToUserId:   v.ToUserID,
+				FromUserId: v.FromUserID,
+				Content:    v.Content,
+				CreateTime: v.CreateTime,
+			})
+		}
 	}
-	for _, v := range messages {
-		resp.MessageList = append(resp.MessageList, &api.Message{
-			Id:         v.ID,
-			ToUserId:   v.ToUserID,
-			FromUserId: v.FromUserID,
-			Content:    v.Content,
-			CreateTime: v.CreateTime,
-		})
-	}
-	resp.StatusCode = config.StatusOK
-	resp.StatusMsg = consts.StatusMessage(consts.StatusOK)
 }
